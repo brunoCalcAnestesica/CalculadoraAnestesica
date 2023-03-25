@@ -46,25 +46,26 @@ namespace CalculadoraAnestesica.DataAccess
 
         public List<Medicamentos> GetAllMedicamentos()
         {
-            var medicamentos = new List<Medicamentos>();
-            medicamentos.Add(GetMedicamento(TablesSchema.ANALGESICOS, nameof(TablesSchema.ANALGESICOS)));
-            medicamentos.Add(GetMedicamento(TablesSchema.ANESTESICOS_LOCAIS, nameof(TablesSchema.ANESTESICOS_LOCAIS)));
-            medicamentos.Add(GetMedicamento(TablesSchema.ANTIBIOTICOS, nameof(TablesSchema.ANTIBIOTICOS)));
-            medicamentos.Add(GetMedicamento(TablesSchema.ANTIEMETICOS, nameof(TablesSchema.ANTIEMETICOS)));
-            medicamentos.Add(GetMedicamento(TablesSchema.BLOQUEADORES_NEURO_MUSUCLAR, nameof(TablesSchema.BLOQUEADORES_NEURO_MUSUCLAR)));
-            medicamentos.Add(GetMedicamento(TablesSchema.BLOQUEIOS_LOCOREGIONA, nameof(TablesSchema.BLOQUEIOS_LOCOREGIONA)));
-            medicamentos.Add(GetMedicamento(TablesSchema.CARDIO, nameof(TablesSchema.CARDIO)));
-            medicamentos.Add(GetMedicamento(TablesSchema.DIVESOS, nameof(TablesSchema.DIVESOS)));
-            medicamentos.Add(GetMedicamento(TablesSchema.DROGAS_DE_EMERGENCIA, nameof(TablesSchema.DROGAS_DE_EMERGENCIA)));
-            medicamentos.Add(GetMedicamento(TablesSchema.INALATORIOS, nameof(TablesSchema.INALATORIOS)));
-            medicamentos.Add(GetMedicamento(TablesSchema.INDUCAO, nameof(TablesSchema.INDUCAO)));
-            medicamentos.Add(GetMedicamento(TablesSchema.INFUSOES, nameof(TablesSchema.INFUSOES)));
-            medicamentos.Add(GetMedicamento(TablesSchema.OBSTETRICOS, nameof(TablesSchema.OBSTETRICOS)));
-            medicamentos.Add(GetMedicamento(TablesSchema.PRE_MEDICACAO, nameof(TablesSchema.PRE_MEDICACAO)));
-            medicamentos.Add(GetMedicamento(TablesSchema.PRE_MEDICACAO_IM_DART, nameof(TablesSchema.PRE_MEDICACAO_IM_DART)));
-            medicamentos.Add(GetMedicamento(TablesSchema.SEQUENCIAL_RAPIDO, nameof(TablesSchema.SEQUENCIAL_RAPIDO)));
-            medicamentos.Add(GetMedicamento(TablesSchema.VASOPRESSORES_DE_ACAO_CURTA, nameof(TablesSchema.VASOPRESSORES_DE_ACAO_CURTA)));
-            return medicamentos;
+            return new List<Medicamentos>()
+            {
+                GetMedicamento(TablesSchema.ANALGESICOS, nameof(TablesSchema.ANALGESICOS)),
+                GetMedicamento(TablesSchema.ANESTESICOS_LOCAIS, nameof(TablesSchema.ANESTESICOS_LOCAIS)),
+                GetMedicamento(TablesSchema.ANTIBIOTICOS, nameof(TablesSchema.ANTIBIOTICOS)),
+                GetMedicamento(TablesSchema.ANTIEMETICOS, nameof(TablesSchema.ANTIEMETICOS)),
+                GetMedicamento(TablesSchema.BLOQUEADORES_NEURO_MUSUCLAR, nameof(TablesSchema.BLOQUEADORES_NEURO_MUSUCLAR)),
+                GetMedicamento(TablesSchema.BLOQUEIOS_LOCOREGIONA, nameof(TablesSchema.BLOQUEIOS_LOCOREGIONA)),
+                GetMedicamento(TablesSchema.CARDIO, nameof(TablesSchema.CARDIO)),
+                GetMedicamento(TablesSchema.DIVESOS, nameof(TablesSchema.DIVESOS)),
+                GetMedicamento(TablesSchema.DROGAS_DE_EMERGENCIA, nameof(TablesSchema.DROGAS_DE_EMERGENCIA)),
+                GetMedicamento(TablesSchema.INALATORIOS, nameof(TablesSchema.INALATORIOS)),
+                GetMedicamento(TablesSchema.INDUCAO, nameof(TablesSchema.INDUCAO)),
+                GetMedicamento(TablesSchema.INFUSOES, nameof(TablesSchema.INFUSOES)),
+                GetMedicamento(TablesSchema.OBSTETRICOS, nameof(TablesSchema.OBSTETRICOS)),
+                GetMedicamento(TablesSchema.PRE_MEDICACAO, nameof(TablesSchema.PRE_MEDICACAO)),
+                GetMedicamento(TablesSchema.PRE_MEDICACAO_IM_DART, nameof(TablesSchema.PRE_MEDICACAO_IM_DART)),
+                GetMedicamento(TablesSchema.SEQUENCIAL_RAPIDO, nameof(TablesSchema.SEQUENCIAL_RAPIDO)),
+                GetMedicamento(TablesSchema.VASOPRESSORES_DE_ACAO_CURTA, nameof(TablesSchema.VASOPRESSORES_DE_ACAO_CURTA))
+            };
         }
 
         private void LoadMedicamentosHtml()
