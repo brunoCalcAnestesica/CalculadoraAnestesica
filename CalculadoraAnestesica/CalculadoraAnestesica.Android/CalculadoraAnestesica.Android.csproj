@@ -16,7 +16,6 @@
     <AndroidManifest>Properties\AndroidManifest.xml</AndroidManifest>
     <MonoAndroidResourcePrefix>Resources</MonoAndroidResourcePrefix>
     <MonoAndroidAssetsPrefix>Assets</MonoAndroidAssetsPrefix>
-    <AndroidUseLatestPlatformSdk>false</AndroidUseLatestPlatformSdk>
     <TargetFrameworkVersion>v13.0</TargetFrameworkVersion>
     <AndroidEnableSGenConcurrent>true</AndroidEnableSGenConcurrent>
     <AndroidUseAapt2>true</AndroidUseAapt2>
@@ -89,7 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CalculadoraAnestesica\CalculadoraAnestesica.csproj">
-      <Project>{522A116F-9537-434C-8F14-6928C05C1649}</Project>
+      <Project>{6E8B39DA-238E-4A9F-897E-4E43870565A7}</Project>
       <Name>CalculadoraAnestesica</Name>
     </ProjectReference>
   </ItemGroup>

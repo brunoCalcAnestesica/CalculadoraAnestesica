@@ -1,4 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using CalculadoraAnestesica.ApplicationHandler;
+using CalculadoraAnestesica.DataAccess.Interfaces;
+using CalculadoraAnestesica.DbContext.Tables;
+using CalculadoraAnestesica.DependencyInjection.IoC;
+using CalculadoraAnestesica.Model.Interfaces;
+using CalculadoraAnestesica.View;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -9,20 +18,20 @@ namespace CalculadoraAnestesica
         public App()
         {
             InitializeComponent();
-
-            MainPage = new MainPage();
+            InitApp();
+            InitNavigation();
         }
 
-        protected override void OnStart()
+        private void InitNavigation()
         {
+            MainPage = new AppCenterView();
         }
 
-        protected override void OnSleep()
+        private void InitApp()
         {
-        }
-
-        protected override void OnResume()
-        {
+            AppHandler.CreateIoC();
+            AppHandler.InitDatabase();
+            AppHandler.AppStart();
         }
     }
 }

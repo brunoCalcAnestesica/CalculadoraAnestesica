@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="CalculadoraAnestesica.View.AppCenterView">
+     <StackLayout
+        Padding="25,55,25,0">
+        <CollectionView
+            x:Name="cView"
+            IsGrouped="True"
+            ItemsSource="{Binding Medicamentos}">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate>
+                    <Label
+                        Text="{Binding GrupoMedicamento}"
+                        TextColor="Black"
+                        CharacterSpacing="2"
+                        FontSize="Large"
+                        FontAttributes="Bold"/>
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout
+                        Margin="1">
+                        <Frame
+                            Margin="5,0,5,0"
+                            BorderColor="LightGray"
+                            HasShadow="False">
+                            <Grid
+                                RowDefinitions="Auto, Auto">
+                                <Label
+                                    Text="{Binding NomeMedicamento}"
+                                    TextColor="Black"   
+                                    FontSize="Medium"/>
+                                <Label
+                                    Grid.Row="1"
+                                    Text="{Binding DescricaoMedicamento}"
+                                    TextColor="Gray"   
+                                    FontSize="Small"/>
+                            </Grid>
+                        </Frame>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+</ContentPage>

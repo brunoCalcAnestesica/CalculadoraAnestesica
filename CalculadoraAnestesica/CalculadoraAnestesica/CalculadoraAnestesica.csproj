@@ -13,5 +13,57 @@
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="AnestCalc.html" />
+    <None Remove="EmbeddedResources\" />
+    <None Remove="EmbeddedResources\AnestCalc.html" />
+    <None Remove="DataAccess\" />
+    <None Remove="Model\" />
+    <None Remove="DataAccess\Base\" />
+    <None Remove="DataAccess\Base\Interface\" />
+    <None Remove="Model\Interfaces\" />
+    <None Remove="DependencyInjection\" />
+    <None Remove="DependencyInjection\IoC\" />
+    <None Remove="DataAccess\DependencyInjection\" />
+    <None Remove="DataAccess\Interfaces\" />
+    <None Remove="DbContext\" />
+    <None Remove="DbContext\Handler\" />
+    <None Remove="DbContext\Tables\" />
+    <None Remove="Controls\" />
+    <None Remove="View\" />
+    <None Remove="View\Intercaces\" />
+    <None Remove="View\DependencyInjection\" />
+    <None Remove="ApplicationHandler\" />
+    <None Remove="Model\DependencyInjection\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="EmbeddedResources\AnestCalc.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EmbeddedResources\" />
+    <Folder Include="DataAccess\" />
+    <Folder Include="Model\" />
+    <Folder Include="Businness\" />
+    <Folder Include="DataAccess\Base\" />
+    <Folder Include="DataAccess\Base\Interface\" />
+    <Folder Include="Model\Interfaces\" />
+    <Folder Include="DependencyInjection\" />
+    <Folder Include="DependencyInjection\IoC\" />
+    <Folder Include="DataAccess\DependencyInjection\" />
+    <Folder Include="DataAccess\Interfaces\" />
+    <Folder Include="DbContext\" />
+    <Folder Include="DbContext\Handler\" />
+    <Folder Include="DbContext\Tables\" />
+    <Folder Include="Controls\" />
+    <Folder Include="View\" />
+    <Folder Include="View\Intercaces\" />
+    <Folder Include="View\DependencyInjection\" />
+    <Folder Include="ApplicationHandler\" />
+    <Folder Include="Model\DependencyInjection\" />
   </ItemGroup>
 </Project>
