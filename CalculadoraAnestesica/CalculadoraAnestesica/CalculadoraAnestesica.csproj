@@ -48,7 +48,6 @@
     <Folder Include="EmbeddedResources\" />
     <Folder Include="DataAccess\" />
     <Folder Include="Model\" />
-    <Folder Include="Businness\" />
     <Folder Include="DataAccess\Base\" />
     <Folder Include="DataAccess\Base\Interface\" />
     <Folder Include="Model\Interfaces\" />
