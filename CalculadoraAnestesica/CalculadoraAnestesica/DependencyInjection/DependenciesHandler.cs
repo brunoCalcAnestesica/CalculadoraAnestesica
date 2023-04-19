@@ -4,6 +4,7 @@ using CalculadoraAnestesica.DataAccess.DependencyInjection;
 using CalculadoraAnestesica.DataAccess.Interfaces;
 using CalculadoraAnestesica.Model.DependencyInjection;
 using CalculadoraAnestesica.View.DependencyInjection;
+using CalculadoraAnestesica.ViewModel.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -29,6 +30,7 @@ namespace CalculadoraAnestesica.DependencyInjection
             AddDependencies(new DataAccessDI());
             AddDependencies(new ViewDI());
             AddDependencies(new ModelDI());
+            AddDependencies(new ViewModelDI());
             return ServiceCollection;
         }
 

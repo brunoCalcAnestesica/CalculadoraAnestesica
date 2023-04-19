@@ -7,7 +7,7 @@ namespace CalculadoraAnestesica.Model
 	{
 		public string GrupoMedicamento { get; set; }
 
-		public	Medicamentos(string grupoMedicamento, List<Medicamento> medicamentos) : base(medicamentos)
+		public Medicamentos(string grupoMedicamento, List<Medicamento> medicamentos) : base(medicamentos)
 		{
             GrupoMedicamento = grupoMedicamento;
         }

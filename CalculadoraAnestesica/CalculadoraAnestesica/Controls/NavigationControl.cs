@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading.Tasks;
 using CalculadoraAnestesica.DependencyInjection.IoC;
+using CalculadoraAnestesica.Shared.Interfaces;
 using Xamarin.Forms;
 
 namespace CalculadoraAnestesica.Controls
@@ -46,8 +47,8 @@ namespace CalculadoraAnestesica.Controls
             TPage view,
             TViewModel viewModel)
         {
-            //((IViewContext)view).SetBinding((IViewModelBase)viewModel);
-            //((IViewModelBase)viewModel).AfterBinding();
+            ((IViewContext)view).SetBinding((IViewModelBase)viewModel);
+            ((IViewModelBase)viewModel).AfterBinding();
         }
 
         private static TPage GetView<TPage>()
@@ -68,6 +69,8 @@ namespace CalculadoraAnestesica.Controls
             parameters?.Invoke(viewModel);
 
             SetBindingContext(view, viewModel);
+            ((IViewContext)view).AddComponents();
+
             return view as Page;
         }
     }

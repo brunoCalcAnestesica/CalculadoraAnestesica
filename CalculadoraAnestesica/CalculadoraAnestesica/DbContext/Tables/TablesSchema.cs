@@ -20,6 +20,7 @@ namespace CalculadoraAnestesica.DbContext.Tables
         public const string ANTIBIOTICOS = "Antibióticos";
         public const string ANESTESICOS_LOCAIS = "Anestésicos Locais (Dose Maxima)";
         public const string BLOQUEIOS_LOCOREGIONA = "Bloqueios Locoregionais";
+        public const string GRUPO_MEDICAMENTOS = "GrupoMedicamentos";
     }
 }
 

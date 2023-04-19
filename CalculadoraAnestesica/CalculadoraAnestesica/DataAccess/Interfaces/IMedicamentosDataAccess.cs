@@ -8,10 +8,13 @@ namespace CalculadoraAnestesica.DataAccess.Interfaces
 {
 	public interface IMedicamentosDataAccess : IDataAccessBase<IMedicamento, Medicamento>
 	{
-        void InsertMedicamento(string tableName, string value, string descricao);
+        void InsertMedicamento(string tableName, string value, string descricao, int id_grupo);
         List<Medicamento> GetMedicamentos(string tableName);
         void CreateMedicamentosTables();
-        List<Medicamentos> GetAllMedicamentos();
+        List<Medicamento> GetMedicamento(string tableName);
+        List<GrupoNomesDTO> GetGrupoNomes();
+        List<Medicamento> GetMedicamentosById(string tableName, int id_grupo);
     }
 }
 
+    

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Foundation;
+using Syncfusion.XForms.iOS.TabView;
 using UIKit;
 
 namespace CalculadoraAnestesica.iOS
@@ -24,7 +25,7 @@ namespace CalculadoraAnestesica.iOS
         {
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());
-
+            SfTabViewRenderer.Init();
             return base.FinishedLaunching(app, options);
         }
     }

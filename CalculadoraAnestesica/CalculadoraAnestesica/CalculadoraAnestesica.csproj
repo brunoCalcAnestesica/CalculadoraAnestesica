@@ -11,12 +11,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2196" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2578" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.46" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
+    <PackageReference Include="Syncfusion.Licensing" Version="20.1.0.52" />
+    <PackageReference Include="Syncfusion.Xamarin.SfTabView" Version="20.1.0.52" />
+    <PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.4" />
+    <PackageReference Include="Xamarin.CommunityToolkit.Markup" Version="2.0.5" />
+    <PackageReference Include="Xamarin.Forms.PancakeView" Version="2.3.0.759" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="AnestCalc.html" />
@@ -40,6 +45,16 @@
     <None Remove="View\DependencyInjection\" />
     <None Remove="ApplicationHandler\" />
     <None Remove="Model\DependencyInjection\" />
+    <None Remove="Extensions\" />
+    <None Remove="ViewModel\" />
+    <None Remove="ViewModel\Base\" />
+    <None Remove="View\Base\" />
+    <None Remove="Shared\" />
+    <None Remove="Shared\Interfaces\" />
+    <None Remove="ViewModel\Interfaces\" />
+    <None Remove="ViewModel\DependencyInjection\" />
+    <None Remove="Converters\" />
+    <None Remove="Model\Base\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\AnestCalc.html" />
@@ -64,5 +79,15 @@
     <Folder Include="View\DependencyInjection\" />
     <Folder Include="ApplicationHandler\" />
     <Folder Include="Model\DependencyInjection\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="ViewModel\" />
+    <Folder Include="ViewModel\Base\" />
+    <Folder Include="View\Base\" />
+    <Folder Include="Shared\" />
+    <Folder Include="Shared\Interfaces\" />
+    <Folder Include="ViewModel\Interfaces\" />
+    <Folder Include="ViewModel\DependencyInjection\" />
+    <Folder Include="Converters\" />
+    <Folder Include="Model\Base\" />
   </ItemGroup>
 </Project>
