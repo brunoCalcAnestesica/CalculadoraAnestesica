@@ -1,9 +1,8 @@
 ﻿using System;
 namespace CalculadoraAnestesica.View.Intercaces
 {
-	public interface IAppCenterView
+	public interface IHemodinamicoCalcView
 	{
-		bool IsFavoriteView { get; set; }
 	}
 }
 

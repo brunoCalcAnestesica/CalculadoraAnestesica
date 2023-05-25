@@ -12,6 +12,7 @@ namespace CalculadoraAnestesica.DataAccess.DependencyInjection
         {
             services.AddTransient<IMedicamentosDataAccess, MedicamentosDataAccess>();
             services.AddTransient<IUserContextDataAccess, UserContextDataAcceess>();
+            services.AddTransient<IFavoriteMedicationsDataAccess, FavoriteMedicationsDataAccess>();
         }
     }
 }

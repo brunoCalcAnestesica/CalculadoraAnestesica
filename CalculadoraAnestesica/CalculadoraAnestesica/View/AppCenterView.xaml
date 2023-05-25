@@ -6,13 +6,14 @@
     xmlns:local="clr-namespace:CalculadoraAnestesica.View.Base"
     xmlns:pancake="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
     NavigationPage.HasNavigationBar="False"
-    BackgroundColor="#EEE">
+    x:Name="appCenterView"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    BackgroundColor="#F5F5F5">
     <Grid
         RowDefinitions="*">
         <Grid
-            RowDefinitions="120, Auto, Auto">
+            RowDefinitions="85, Auto, *">
             <pancake:PancakeView
-                CornerRadius="0,0,10,10"
                 Padding="0,30,0,0">
                 <pancake:PancakeView.Background>
                     <LinearGradientBrush
@@ -30,65 +31,65 @@
                     ColumnDefinitions="*"
                     HorizontalOptions="Fill"
                     VerticalOptions="Fill">
-                    <!--<Image
-                        IsVisible="{Binding IsParametersVisible}"
-                        x:Name="ImageApp"
-                        Source="app_icon.png"
-                        HeightRequest="55"
-                        WidthRequest="55"
-                        HorizontalOptions="Center"/>-->
                     <Label
-                        CharacterSpacing="1"
+                        IsVisible="{Binding IsHeaderVisible}"
                         FontAttributes="Bold"
-                        IsVisible="{Binding IsParametersVisible}"
                         x:Name="NameApp"
                         Text="Calculadora"
                         TextColor="White"
                         VerticalOptions="Start"
                         FontSize="Large"
-                        Margin="10, 10, 0, 0"/>
+                        Margin="10, -5, 0, 0"/>
                      <Label
-                        CharacterSpacing="1"
+                        IsVisible="{Binding IsHeaderVisible}"
                         FontAttributes="Bold"
                         FontSize="Large"
-                        IsVisible="{Binding IsParametersVisible}"
                         x:Name="NameApp2"
                         TextColor="White"
                         Text="Anestésica"
                         VerticalOptions="Start"
-                        Margin="10, 35, 0, 0"/>
-                    <SearchBar
-                        CancelButtonColor="Blue"
-                        IsVisible="{Binding SearchBarVisible}"
-                        BackgroundColor="Transparent"
+                        Margin="10, 18, 0, 0"/>
+                    <Image
+                        IsVisible="{Binding IsHeaderVisible}"
+                        Margin="15,-20,0,0"
+                        Source="logo_icon.png"
+                        HeightRequest="40"
+                        WidthRequest="40"
                         HorizontalOptions="Center"
-                        Margin="0, 0, 70, 0"/>
-                    <Label
-                        IsVisible="{Binding SearchBarVisible}"
+                        VerticalOptions="Center"/>
+                     <ImageButton
+                        IsVisible="{Binding IsHeaderVisible}"
+                        Command="{Binding SearchIconCommand}"
+                        Margin="0,-20,10,0"
+                        Source="search_icon.png"
+                        HeightRequest="55"
+                        WidthRequest="55"
+                        HorizontalOptions="End"
+                        VerticalOptions="Center"/>
+                    <Frame
+                        Margin="5,0,85,10"
+                        IsVisible="{Binding IsSearchBarVisible}"
+                        BackgroundColor="White"
+                        HasShadow="False"
+                        CornerRadius="15">
+                       <SearchBar
+                            Text="{Binding SearchBarText}"
+                            Margin="-15"/>
+                    </Frame>
+                    <Button
+                        IsVisible="{Binding IsSearchBarVisible}"
+                        Command="{Binding SearchIconCommand}"
+                        Margin="0,0,10,10"
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
                         Text="Cancelar"
                         TextColor="White"
-                        FontSize="18"
-                        HorizontalTextAlignment="End"
-                        VerticalTextAlignment="Center">
-                        <Label.GestureRecognizers>
-                            <TapGestureRecognizer
-                                Command="{Binding CancelCommand}"/>
-                        </Label.GestureRecognizers>
-                    </Label>
-                     <ImageButton
-                        BackgroundColor="Transparent"
-                        IsVisible="{Binding IsParametersVisible}"
-                        HorizontalOptions="End"
-                        Source="search_icon.png"
-                        Margin="0,10,10,0"
-                        HeightRequest="50"
-                        WidthRequest="50"
-                        Command="{Binding SearchIconCommand}"/>
+                        FontAttributes="Bold"
+                        FontSize="17"/>
                 </Grid>
             </pancake:PancakeView>
             <Grid
                 ColumnSpacing="75"
-                IsVisible="{Binding IsParametersVisible}"
                 Margin="0,15,0,0"
                 HorizontalOptions="Center"
                 VerticalOptions="Center"
@@ -106,6 +107,7 @@
                     Orientation="Horizontal"
                     Grid.Row="1">
                     <Entry
+                        Text="{Binding EntryWeight}"
                         x:Name="entryPeso"
                         HorizontalTextAlignment="Center"
                         WidthRequest="75"
@@ -133,222 +135,187 @@
                     TextColor="#005299"/>
             </Grid>
             <ScrollView
-                Margin="5"
-                Grid.Row="2"
-                Padding="15">
+                Grid.Row="2">
                 <StackLayout
-                    Spacing="10"
-                    x:Name="expanderItems">
+                    Margin="5"
+                    BindableLayout.ItemsSource="{Binding GrupoNomes}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <StackLayout
+                                Margin="5">
+                                <Frame
+                                    HeightRequest="25"
+                                    HasShadow="False"
+                                    CornerRadius="15"
+                                    BackgroundColor="#FFF">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Tapped="TapGestureRecognizer_Tapped"/>
+                                    </Frame.GestureRecognizers>
+                                    <Grid>
+                                        <Label
+                                            HorizontalOptions="Start"
+                                            VerticalOptions="Center"
+                                            Text="{Binding NomeGrupo}"
+                                            FontSize="15"
+                                            FontAttributes="Bold"
+                                            TextColor="#003766"/>
+                                        <Image
+                                            Rotation="{Binding Rotation}"
+                                            x:Name="image"
+                                            Source="arrow_icon.png"
+                                            HorizontalOptions="End"
+                                            HeightRequest="40"
+                                            WidthRequest="40"/>
+                                    </Grid>    
+                                </Frame>
+                                <CollectionView
+                                    x:Name="cView"
+                                    IsVisible="False"
+                                    Margin="5,0,5,0">
+                                    <CollectionView.ItemTemplate>
+                                        <DataTemplate>
+                                            <StackLayout
+                                                Padding="0,0,20,0">
+                                                <Grid
+                                                    Margin="0,0,0,0">
+                                                    <ImageButton
+                                                        Source="{Binding IsFavorite, Converter={StaticResource boolToIconConverter}}"
+                                                        xct:IconTintColorEffect.TintColor="Green"
+                                                        HeightRequest="40"
+                                                        WidthRequest="40"
+                                                        HorizontalOptions="Start"
+                                                        BackgroundColor="Transparent"
+                                                        Command="{Binding BindingContext.FavoriteIconCommand, Source={x:Reference appCenterView}}"
+                                                        CommandParameter="{Binding .}"/>
+                                                    <StackLayout
+                                                        HorizontalOptions="FillAndExpand"
+                                                        Margin="40,15,0,0">
+                                                        <Label
+                                                            LineBreakMode="WordWrap"
+                                                            FontAttributes="Bold"
+                                                            HorizontalTextAlignment="Start"
+                                                            TextColor="#006FCE"
+                                                            Text="{Binding NomeMedicamento}"
+                                                            FontSize="13"/>
+                                                        <Label
+                                                            LineBreakMode="WordWrap"
+                                                            HorizontalTextAlignment="Start"
+                                                            VerticalTextAlignment="Center"
+                                                            TextColor="#006FCE"
+                                                            Text="{Binding DosagemMedicamento}"
+                                                            FontSize="12"/>
+                                                    </StackLayout>
+                                                    <Label
+                                                        Margin="100,0,0,0"
+                                                        LineBreakMode="WordWrap"
+                                                        VerticalTextAlignment="Center"
+                                                        HorizontalTextAlignment="End"
+                                                        TextColor="#003766"
+                                                        Text="{Binding Resultado}"
+                                                        FontSize="13"/> 
+                                                </Grid>
+                                            </StackLayout>
+                                        </DataTemplate>
+                                    </CollectionView.ItemTemplate>
+                                </CollectionView>
+                            </StackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
                 </StackLayout>
             </ScrollView>
             
-            <!--<tabView:SfTabView
-                x:Name="sfTabView"
+
+            <!--<ListView
+                BackgroundColor="Transparent"
+                ItemsSource="{Binding Medicamentos}"
+                x:Name="cView"
+                IsGroupingEnabled="True"
                 Margin="5"
-                TabWidthMode="BasedOnText"
+                RowHeight="75"
+                HasUnevenRows="True"
+                x:FieldModifier="public"
+                ItemSelected="cView_ItemSelected"
                 Grid.Row="2">
-                <tabView:SfTabItem
-                    HeightRequest="50"
-                    SelectionColor="#E93ED8"
-                    TitleFontAttributes="Bold">
-                    <tabView:SfTabItem.HeaderContent>
-                        <Grid
-                            Margin="0,10,0,0"
-                            RowDefinitions="Auto">
-                            <Image
-                                Margin="0,10,0,0"
-                                HorizontalOptions="Start"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                Source="pink_icon.png"/>
-                            <Label
-                                Margin="5,20,0,0"
-                                HorizontalOptions="Center"
-                                Text="Teste"
-                                FontSize="15"
-                                TextColor="#E93ED8"/>
-                        </Grid>
-                    </tabView:SfTabItem.HeaderContent>
-                    <tabView:SfTabItem.Content>
-                        <CollectionView
-                            ItemsSource="{Binding Medicamentos}">
-                            <CollectionView.ItemTemplate>
-                                <DataTemplate>
+                <ListView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout
+                                Margin="5">
+                                <Frame
+                                    HasShadow="False"
+                                    CornerRadius="15"
+                                    BackgroundColor="#FFF">
+                                    <Grid>
+                                        <Label
+                                            HorizontalOptions="Start"
+                                            VerticalOptions="Center"
+                                            Text="{Binding GrupoMedicamento}"
+                                            FontSize="15"
+                                            FontAttributes="Bold"
+                                            TextColor="#003766">
+                                        </Label>
+                                        <Image
+                                            x:Name="image"
+                                            Source="arrow_icon.png"
+                                            HorizontalOptions="End"
+                                            HeightRequest="30"
+                                            WidthRequest="30"/>
+                                    </Grid>    
+                                </Frame>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.GroupHeaderTemplate>
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout
+                                HeightRequest="500"
+                                Padding="0,0,20,0">
+                                <Grid
+                                    Margin="0,0,0,0">
+                                    <ImageButton
+                                        Source="{Binding IsFavorite, Converter={StaticResource boolToIconConverter}}"
+                                        xct:IconTintColorEffect.TintColor="Green"
+                                        HeightRequest="40"
+                                        WidthRequest="40"
+                                        HorizontalOptions="Start"
+                                        BackgroundColor="Transparent"
+                                        Command="{Binding BindingContext.FavoriteIconCommand, Source={x:Reference appCenterView}}"
+                                        CommandParameter="{Binding .}"/>
                                     <StackLayout
-                                        Margin="0,10,0,0">
-                                        <Frame
-                                            CornerRadius="15"
-                                            Margin="5,0,5,0"
-                                            BackgroundColor="#FFF"
-                                            HasShadow="False">
-                                            <Grid
-                                                RowDefinitions="Auto">
-                                                <ImageButton
-                                                    Source="no_favorite_icon.png"
-                                                    HeightRequest="50"
-                                                    WidthRequest="50"
-                                                    BackgroundColor="#EEE"
-                                                    CornerRadius="25"
-                                                    HorizontalOptions="Start"/>
-                                                <StackLayout
-                                                    VerticalOptions="Center"
-                                                    Margin="65,5,0,0">
-                                                    <Label
-                                                        FontAttributes="Bold"
-                                                        Text="{Binding NomeMedicamento}"
-                                                        TextColor="#006FCE"   
-                                                        FontSize="Medium"/>
-                                                </StackLayout>
-                                                <Label
-                                                    VerticalTextAlignment="Center"
-                                                    HorizontalTextAlignment="End"
-                                                    Text="{Binding Resultado}"
-                                                    TextColor="#003766"   
-                                                    FontSize="Small"/>
-                                            </Grid>
-                                        </Frame>
+                                        HorizontalOptions="FillAndExpand"
+                                        Margin="40,15,0,0">
+                                        <Label
+                                            LineBreakMode="WordWrap"
+                                            HorizontalTextAlignment="Start"
+                                            VerticalTextAlignment="Center"
+                                            FontAttributes="Bold"
+                                            TextColor="#006FCE"
+                                            Text="{Binding DosagemMedicamento}"
+                                            FontSize="13"/>
+                                        <Label
+                                            LineBreakMode="WordWrap"
+                                            HorizontalTextAlignment="Start"
+                                            TextColor="#006FCE"
+                                            Text="{Binding NomeMedicamento}"
+                                            FontSize="12"/>
                                     </StackLayout>
-                                </DataTemplate>
-                            </CollectionView.ItemTemplate>
-                        </CollectionView>
-                    </tabView:SfTabItem.Content>
-                </tabView:SfTabItem>
-                <tabView:SfTabItem
-                    WidthRequest="50">
-                    <tabView:SfTabItem.HeaderContent>
-                        <Grid
-                            Margin="0,10,0,0"
-                            RowDefinitions="Auto">
-                            <Image
-                                Margin="0,10,0,0"
-                                HorizontalOptions="Center"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                Source="blue_icon.png"/>
-                            <Label
-                                IsVisible="False"
-                                Margin="5,20,0,0"
-                                HorizontalOptions="Center"
-                                Text="Teste"
-                                FontSize="15"
-                                TextColor="#005299"/>
-                        </Grid>
-                    </tabView:SfTabItem.HeaderContent>
-                </tabView:SfTabItem>
-                <tabView:SfTabItem
-                    WidthRequest="50">
-                    <tabView:SfTabItem.HeaderContent>
-                        <Grid
-                            Margin="0,10,0,0"
-                            RowDefinitions="Auto">
-                            <Image
-                                Margin="0,10,0,0"
-                                HorizontalOptions="Start"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                Source="green_icon.png"/>
-                            <Label
-                                IsVisible="False"
-                                Margin="5,20,0,0"
-                                HorizontalOptions="Center"
-                                Text="Teste"
-                                FontSize="15"
-                                TextColor="#E93ED8"/>
-                        </Grid>
-                    </tabView:SfTabItem.HeaderContent>
-                </tabView:SfTabItem>
-                <tabView:SfTabItem
-                    WidthRequest="50">
-                    <tabView:SfTabItem.HeaderContent>
-                        <Grid
-                            Margin="0,10,0,0"
-                            RowDefinitions="Auto">
-                            <Image
-                                Margin="0,10,0,0"
-                                HorizontalOptions="Start"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                Source="orange_icon.png"/>
-                            <Label
-                                IsVisible="False"
-                                Margin="5,20,0,0"
-                                HorizontalOptions="Center"
-                                Text="Teste"
-                                FontSize="15"
-                                TextColor="#E93ED8"/>
-                        </Grid>
-                    </tabView:SfTabItem.HeaderContent>
-
-                </tabView:SfTabItem>
-                <tabView:SfTabItem
-                    WidthRequest="50">
-                    <tabView:SfTabItem.HeaderContent>
-                        <Grid
-                            Margin="0,10,0,0"
-                            RowDefinitions="Auto">
-                            <Image
-                                Margin="0,10,0,0"
-                                HorizontalOptions="Start"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                Source="pink_icon.png"/>
-                            <Label
-                                IsVisible="False"
-                                Margin="5,20,0,0"
-                                HorizontalOptions="Center"
-                                Text="Teste"
-                                FontSize="15"
-                                TextColor="#E93ED8"/>
-                        </Grid>
-                    </tabView:SfTabItem.HeaderContent>
-
-                </tabView:SfTabItem>
-                <tabView:SfTabItem
-                    WidthRequest="50">
-                    <tabView:SfTabItem.HeaderContent>
-                        <Grid
-                            Margin="0,10,0,0"
-                            RowDefinitions="Auto">
-                            <Image
-                                Margin="0,10,0,0"
-                                HorizontalOptions="Start"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                Source="purple_icon.png"/>
-                            <Label
-                                IsVisible="False"
-                                Margin="5,20,0,0"
-                                HorizontalOptions="Center"
-                                Text="Teste"
-                                FontSize="15"
-                                TextColor="#E93ED8"/>
-                        </Grid>
-                    </tabView:SfTabItem.HeaderContent>
-
-                </tabView:SfTabItem>
-                <tabView:SfTabItem
-                    WidthRequest="50">
-                    <tabView:SfTabItem.HeaderContent>
-                        <Grid
-                            Margin="0,10,0,0"
-                            RowDefinitions="Auto">
-                            <Image
-                                Margin="0,10,0,0"
-                                HorizontalOptions="Start"
-                                HeightRequest="40"
-                                WidthRequest="40"
-                                Source="yellow_icon.png"/>
-                            <Label
-                                IsVisible="False"
-                                Margin="5,20,0,0"
-                                HorizontalOptions="Center"
-                                Text="Teste"
-                                FontSize="15"
-                                TextColor="#E93ED8"/>
-                        </Grid>
-                    </tabView:SfTabItem.HeaderContent>
-                </tabView:SfTabItem>
-            </tabView:SfTabView>-->
+                                    <Label
+                                        Margin="100,0,0,0"
+                                        LineBreakMode="WordWrap"
+                                        VerticalTextAlignment="Center"
+                                        HorizontalTextAlignment="End"
+                                        TextColor="#003766"
+                                        Text="{Binding Resultado}"
+                                        FontSize="13"/> 
+                                </Grid>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>--> 
         </Grid>
     </Grid>
 </local:ViewBase>

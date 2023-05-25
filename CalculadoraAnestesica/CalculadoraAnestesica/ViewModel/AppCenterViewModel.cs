@@ -7,30 +7,18 @@ using CalculadoraAnestesica.ApplicationHandler;
 using CalculadoraAnestesica.DataAccess.Interfaces;
 using CalculadoraAnestesica.DbContext.Tables;
 using CalculadoraAnestesica.DependencyInjection.IoC;
+using CalculadoraAnestesica.Helpers;
 using CalculadoraAnestesica.Model;
 using CalculadoraAnestesica.Model.Interfaces;
 using CalculadoraAnestesica.ViewModel.Base;
+using CalculadoraAnestesica.ViewModel.DependencyInjection;
 using CalculadoraAnestesica.ViewModel.Interfaces;
 using Xamarin.Forms;
 
 namespace CalculadoraAnestesica.ViewModel
 {
-	public class AppCenterViewModel : ViewModelBase, IAppCenterViewModel
+	public class AppCenterViewModel : MedicationsViewModelBase, IAppCenterViewModel
     {
-		public ICommand SearchIconCommand { get; }
-        public ICommand CancelCommand { get; }
-        
-        private ObservableCollection<Medicamento> medicamentos;
-        public ObservableCollection<Medicamento> Medicamentos
-        {
-            get { return medicamentos; }
-            set
-            {
-                medicamentos = value;
-                OnPropertyChanged();
-            }
-        }
-
         private bool searchBarVisible;
         public bool SearchBarVisible
         {
@@ -38,75 +26,38 @@ namespace CalculadoraAnestesica.ViewModel
             set
             {
                 searchBarVisible = value;
-                OnPropertyChanged();
+                RaisePropertyChanged();
             }
         }
 
-        private bool isParametersVisible;
-		public bool IsParametersVisible
-		{
-			get { return isParametersVisible; }
-			set
-			{
-				isParametersVisible = value;
-				OnPropertyChanged();
-			}
-		}
-
-		private bool isSearchVisible;
-		private void Teste()
-		{
-			if (!isSearchVisible)
-            {
-                isSearchVisible = true;
-                SearchBarVisible = true;
-                IsParametersVisible = false;
-            }
-            else
-            {
-                SearchBarVisible = false;
-                IsParametersVisible = true;
-                isSearchVisible = false;
-            }
-        }
-
-        private string grupoMedicamento;
-        public string GrupoMedicamento
-        {
-            get { return grupoMedicamento; }
-            set
-            {
-                grupoMedicamento = value;
-                OnPropertyChanged();
-            }
-        }
-
-        private double itemsSize;
-        public double ItemsSize
-        {
-            get { return itemsSize; }
-            set
-            {
-                itemsSize = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public AppCenterViewModel()
+        public AppCenterViewModel() : base()
         {
             SetFirstAccess();
-            SearchIconCommand = new Command(Teste);
-            CancelCommand = new Command(Teste);
-            IsParametersVisible = true;
         }
 
         public override void OnAppearing()
         {
-            var medicamentos = Resolver
-                .Get<IMedicamentosDataAccess>()
-                .GetMedicamento(nameof(TablesSchema.ANALGESICOS));
+            base.OnAppearing();
+            //var grupoMedicamentos = GetGrupoNomes();
 
-            Medicamentos = new ObservableCollection<Medicamento>(medicamentos);
+            //List<Medicamentos> list = new List<Medicamentos>();
+
+            //for (int i = 0; i < grupoMedicamentos.Count; i++)
+            //{
+            //    var source = SetMedicamentos(
+            //        Utils.ConvertToTableSchema(grupoMedicamentos[i].NomeGrupo),
+            //        0,
+            //        0
+            //    );
+
+            //    list.Add(new Medicamentos(
+            //        grupoMedicamentos[i].NomeGrupo,
+            //        new ObservableCollection<Medicamento>(source))
+            //    );
+            //}
+
+            //Medicamentos = new ObservableCollection<Medicamentos>(list);
+            //AuxList = list;
         }
 
         private void SetFirstAccess()
@@ -139,9 +90,8 @@ namespace CalculadoraAnestesica.ViewModel
         {
             try
             {
-                var medicamentos = Resolver
-                        .Get<IMedicamentosDataAccess>()
-                        .GetMedicamentosById(grupoNome, id);
+                var medicamentos = Resolver.Get<IMedicamentosDataAccess>()
+                    .GetMedicamentosById(grupoNome, id);
 
                 foreach (var med in medicamentos)
                 {
@@ -149,9 +99,9 @@ namespace CalculadoraAnestesica.ViewModel
                         med.DosagemMedicamento, peso
                     );
 
-                    med.Resultado = result2.HasValue ?
-                        $"{result1} - {result2}mg" :
-                        $"{result1}mg";
+                    med.Resultado = result2.HasValue
+                        ? $"{result1} - {result2}mg"
+                        : $"{result1}mg";
                 }
 
                 return medicamentos;
@@ -160,58 +110,6 @@ namespace CalculadoraAnestesica.ViewModel
             {
                 return new List<Medicamento>();
             }
-        }
-
-        private string GetOnlyNumber(string doseString)
-        {
-            var result = doseString.Where(c => char.IsDigit(c) || c == ',');
-            return string.Join("", result);
-        }
-
-        private (double, double?) Calculate(string dosagem, double peso)
-        {
-            if (dosagem.Contains("-"))
-            {
-                string[] arr = dosagem.Split('-');
-
-                string n1 = arr[0].Trim();
-                string[] arrNum2 = arr[1].Trim().Split(' ');
-                string n2 = GetOnlyNumber(arrNum2[0]);
-
-                double result1 = double.Parse(n1) * peso;
-                double result2 = double.Parse(n2) * peso;
-
-                return (result1, result2);
-            }
-
-            string[] arr2 = dosagem.Split(' ');
-
-            int? index = null;
-
-            for (int i = 0; i < arr2.Length; i++)
-            {
-                string item = arr2[i].Trim();
-
-                foreach (char c in item)
-                {
-                    if (char.IsDigit(c))
-                    {
-                        index = i;
-                        break;
-                    }
-
-                    break;
-                }
-
-                if (index.HasValue)
-                    break;
-            }
-
-            string num1 = GetOnlyNumber(arr2[index.Value]);
-
-            double resultNum1 = double.Parse(num1) * peso;
-
-            return (resultNum1, null);
         }
 
         private void ExecuteFilter()

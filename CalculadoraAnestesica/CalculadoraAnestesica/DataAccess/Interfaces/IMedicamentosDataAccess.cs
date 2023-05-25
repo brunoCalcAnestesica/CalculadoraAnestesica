@@ -14,6 +14,10 @@ namespace CalculadoraAnestesica.DataAccess.Interfaces
         List<Medicamento> GetMedicamento(string tableName);
         List<GrupoNomesDTO> GetGrupoNomes();
         List<Medicamento> GetMedicamentosById(string tableName, int id_grupo);
+        string GetGrupoNomeById(int id);
+        Medicamento GetMedicamentosByMedicationId(string tableName, int id);
+        void SetFavoriteMedication(string tableName, int id, bool isFavorite);
+        List<Medicamento> GetFavoriteMedications(string tableName);
     }
 }
 

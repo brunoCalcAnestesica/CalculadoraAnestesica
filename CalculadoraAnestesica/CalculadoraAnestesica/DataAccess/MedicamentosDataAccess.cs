@@ -6,6 +6,7 @@ using CalculadoraAnestesica.DataAccess.Base;
 using CalculadoraAnestesica.DataAccess.Interfaces;
 using CalculadoraAnestesica.DbContext.Tables;
 using CalculadoraAnestesica.DependencyInjection.IoC;
+using CalculadoraAnestesica.Helpers;
 using CalculadoraAnestesica.Model;
 using CalculadoraAnestesica.Model.Interfaces;
 using CalculadoraAnestesica.Shared;
@@ -28,8 +29,8 @@ namespace CalculadoraAnestesica.DataAccess
         {
             Connection.Execute($@"
                 INSERT INTO {tableName}
-                (nome_medicamento, descricao_medicamento, id_grupo)
-                VALUES ('{value}', '{descricao}', '{id_grupo}');"
+                (nome_medicamento, descricao_medicamento, id_grupo, is_favorite)
+                VALUES ('{value}', '{descricao}', '{id_grupo}', 0);"
             );
         }
 
@@ -39,9 +40,24 @@ namespace CalculadoraAnestesica.DataAccess
                     SELECT {tableName}.id AS Id,
                            {tableName}.nome_medicamento AS NomeMedicamento,
                            {tableName}.descricao_medicamento AS DescricaoMedicamento,
-                           {tableName}.id_grupo AS IdGrupo
+                           {tableName}.id_grupo AS IdGrupo,
+                           {tableName}.is_favorite AS IsFavorite
                       FROM {tableName}")
             .ExecuteQuery<Medicamento>();
+        }
+
+        public Medicamento GetMedicamentos(string tableName,
+            int id)
+        {
+            return Connection.CreateCommand($@"
+                    SELECT {tableName}.id AS Id,
+                           {tableName}.nome_medicamento AS NomeMedicamento,
+                           {tableName}.descricao_medicamento AS DescricaoMedicamento,
+                           {tableName}.id_grupo AS IdGrupo
+                      FROM {tableName}
+                     WHERE {tableName}.id = {id}")
+                .ExecuteQuery<Medicamento>()?
+                .FirstOrDefault();
         }
 
         public List<Medicamento> GetMedicamentosById(string tableName,
@@ -57,7 +73,7 @@ namespace CalculadoraAnestesica.DataAccess
 
         public List<Medicamento> GetMedicamento(string tableName)
         {
-            return GetMedicamentoInternal(nameof(TablesSchema.ANALGESICOS));
+            return GetMedicamentoInternal(tableName);
         }
 
         private void LoadMedicamentosHtml()
@@ -196,7 +212,8 @@ namespace CalculadoraAnestesica.DataAccess
 	                id INTEGER PRIMARY KEY,
 	                nome_medicamento TEXT,
                     descricao_medicamento TEXT,
-                    id_grupo INT
+                    id_grupo INT,
+                    is_favorite BOOLEAN
                 );");
 
                 InsertGrupo(groupName);
@@ -262,21 +279,92 @@ namespace CalculadoraAnestesica.DataAccess
            .FirstOrDefault();
         }
 
+        public void SetFavoriteMedication(string tableName, int id, bool isFavorite)
+        {
+            int value = isFavorite ? 1 : 0;
+
+            int rows = Connection.CreateCommand($@"
+                UPDATE {tableName}
+                    SET is_favorite = {value}
+                WHERE {tableName}.id = {id}")
+                .ExecuteNonQuery();
+        }
+
+        public List<Medicamento> GetFavoriteMedications(string tableName)
+        {
+            var meds = GetFavoriteMedicationsInternal(tableName);
+
+            for (int i = 0; i < meds.Count; i++)
+            {
+                var medicamento = BuldMedicamento(meds[i]);
+            }
+
+            return meds;
+        }
+
+        private List<Medicamento> GetFavoriteMedicationsInternal(string tableName)
+        {
+            return Connection.CreateCommand($@"
+                    SELECT {tableName}.id AS Id,
+                           {tableName}.nome_medicamento AS NomeMedicamento,
+                           {tableName}.descricao_medicamento AS DescricaoMedicamento,
+                           {tableName}.id_grupo AS IdGrupo,
+                           {tableName}.is_favorite AS IsFavorite
+                      FROM {tableName}
+                     WHERE {tableName}.is_favorite = 1")
+           .ExecuteQuery<Medicamento>();
+        }
+
         private List<Medicamento> GetMedicamentoInternal(string tableName)
         {
             var med = GetMedicamentos(tableName);
 
             for (int i = 0; i < med.Count; i++)
             {
-                var medicamento = med[i];
-                string[] arr = medicamento.NomeMedicamento.Split(' ');
-
-                medicamento.NomeMedicamento = arr[0].Trim();
-                medicamento.DosagemMedicamento = $"{string.Join(" ", arr.Skip(1))}";
-                medicamento.Resultado = "0 mg";
+                var medicamento = BuldMedicamento(med[i]);
             }
 
             return med;
+        }
+
+        private Medicamento GetMedicamentoInternal(string tableName,
+            int id)
+        {
+            var med = GetMedicamentos(tableName, id);
+
+            if (med is null)
+                return null;
+            
+            return BuldMedicamento(med);
+        }
+
+        private Medicamento BuldMedicamento(Medicamento medicamento)
+        {
+            string[] arr = medicamento.NomeMedicamento.Split(' ');
+            medicamento.NomeMedicamento = arr[0].Trim();
+            medicamento.DosagemMedicamento = $"{string.Join(" ", arr.Skip(1))}";
+            medicamento.Resultado = "0 mg";
+            return medicamento;
+        }
+
+        public string GetGrupoNomeById(int id)
+        {
+            string tableName = TablesSchema.GRUPO_MEDICAMENTOS;
+
+            var result = Connection.CreateCommand($@"
+                    SELECT {tableName}.nome_grupo AS NomeGrupo
+                      FROM {tableName}
+                     WHERE {tableName}.id = {id}")
+                .ExecuteQuery<GrupoNomesDTO>()?
+                .FirstOrDefault();
+
+            return result?.NomeGrupo;
+        }
+
+        public Medicamento GetMedicamentosByMedicationId(string tableName,
+            int id)
+        {
+            return GetMedicamentoInternal(tableName, id);
         }
     }
 }

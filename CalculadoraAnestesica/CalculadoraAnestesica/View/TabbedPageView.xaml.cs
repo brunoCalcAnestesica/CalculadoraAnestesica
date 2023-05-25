@@ -14,18 +14,23 @@ namespace CalculadoraAnestesica.View
 		public TabbedPageView ()
 		{
 			InitializeComponent();
-
-            var appCenterView = NavigationControl
-                .GetPage<IAppCenterView, IAppCenterViewModel>();
-
-            appCenterView.Title = "Cálculo";
-            appCenterView.IconImageSource = "calc_icon.png";
-
-			Children.Add(appCenterView);    
-            Children.Add(new Page { Title = "Cálculo 2", IconImageSource = "calc_icon.png" });
-            Children.Add(new Page { Title = "Favoritos", IconImageSource = "star_icon.png" });
-
 			NavigationPage.SetHasNavigationBar(this, false);
+
+            var hemodinamicoCalcView = NavigationControl.GetPage<IHemodinamicoCalcView, IHemodinamicoCalcViewModel>();
+            hemodinamicoCalcView.Title = "Hemodinâmico";
+            hemodinamicoCalcView.IconImageSource = "cardiogram.png";
+
+            var appCenterView = NavigationControl.GetPage<IAppCenterView, IAppCenterViewModel>();
+            appCenterView.Title = "Cálculo";
+            appCenterView.IconImageSource = "pill_icon.png";
+
+            var favoriteView = NavigationControl.GetPage<IAppCenterView, IFavoriteViewModel>();
+            favoriteView.Title = "Favoritos";
+            favoriteView.IconImageSource = "star_icon.png";
+
+            Children.Add(hemodinamicoCalcView);
+			Children.Add(appCenterView);    
+            Children.Add(favoriteView);
 
             On<Android>().SetToolbarPlacement(ToolbarPlacement.Bottom);
             BackgroundColor = Color.FromHex("#FFFFFF");

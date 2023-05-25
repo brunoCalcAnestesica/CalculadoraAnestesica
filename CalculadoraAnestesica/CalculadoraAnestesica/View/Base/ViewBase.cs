@@ -11,10 +11,8 @@ namespace CalculadoraAnestesica.View.Base
             if (viewModelBase != null)
                 BindingContext = viewModelBase;
         }
-
-        public virtual void AddComponents() { }
-
-        protected override void OnAppearing()
+        
+        protected override void OnAppearing()   
         {
             if (BindingContext != null)
                 ((IViewModelBase)BindingContext).OnAppearing();
@@ -25,6 +23,8 @@ namespace CalculadoraAnestesica.View.Base
             if (BindingContext != null)
                 ((IViewModelBase)BindingContext).OnDisappearing();
         }
+
+        public virtual void AddComponents() { }
     }
 }
 

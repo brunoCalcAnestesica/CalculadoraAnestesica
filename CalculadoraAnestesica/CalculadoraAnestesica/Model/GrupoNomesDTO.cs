@@ -5,6 +5,8 @@ namespace CalculadoraAnestesica.Model
 	{
 		public int Id { get; set; }
 		public string NomeGrupo { get; set; }
-	}
+        public bool IsSelected { get; set; }
+        public double Rotation { get; set; }
+    }
 }
 

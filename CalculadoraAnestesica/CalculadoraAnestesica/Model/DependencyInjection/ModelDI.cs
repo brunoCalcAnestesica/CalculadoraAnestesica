@@ -10,6 +10,7 @@ namespace CalculadoraAnestesica.Model.DependencyInjection
         public void AddDependencies(IServiceCollection services)
         {
             services.AddTransient<IUserContext, UserContext>();
+            services.AddTransient<IFavoriteMedications, FavoriteMedications>();
         }
     }
 }

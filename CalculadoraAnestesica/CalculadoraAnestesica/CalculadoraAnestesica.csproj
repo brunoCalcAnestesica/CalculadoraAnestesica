@@ -22,6 +22,9 @@
     <PackageReference Include="Xamarin.CommunityToolkit" Version="2.0.4" />
     <PackageReference Include="Xamarin.CommunityToolkit.Markup" Version="2.0.5" />
     <PackageReference Include="Xamarin.Forms.PancakeView" Version="2.3.0.759" />
+    <PackageReference Include="ExcelDataReader" Version="3.6.0" />
+    <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
+    <PackageReference Include="DevExpress.XamarinForms.Grid" Version="22.1.7" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="AnestCalc.html" />
@@ -55,9 +58,12 @@
     <None Remove="ViewModel\DependencyInjection\" />
     <None Remove="Converters\" />
     <None Remove="Model\Base\" />
+    <None Remove="EmbeddedResources\MedCalcHemodinamico.xlsx" />
+    <None Remove="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\AnestCalc.html" />
+    <EmbeddedResource Include="EmbeddedResources\MedCalcHemodinamico.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="EmbeddedResources\" />
@@ -89,5 +95,6 @@
     <Folder Include="ViewModel\DependencyInjection\" />
     <Folder Include="Converters\" />
     <Folder Include="Model\Base\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 </Project>

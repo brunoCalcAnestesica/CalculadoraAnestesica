@@ -10,6 +10,7 @@ namespace CalculadoraAnestesica.View.DependencyInjection
         public void AddDependencies(IServiceCollection services)
         {
             services.AddTransient<IAppCenterView, AppCenterView>();
+            services.AddTransient<IHemodinamicoCalcView, HemodinamicoCalcView>();
         }
     }
 }

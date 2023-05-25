@@ -13,6 +13,20 @@ namespace CalculadoraAnestesica.Model
         public int IdGrupo { get; set; }
         public string Formula { get; set; }
 
+        private double heighRequest = 0;
+        public double HeighRequest
+        {
+            get { return heighRequest; }
+            set
+            {
+                if (heighRequest != value)
+                {
+                    heighRequest = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private string resultado;
         public string Resultado
         {

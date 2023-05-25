@@ -5,7 +5,9 @@ using System.Linq;
 using CalculadoraAnestesica.DataAccess.Interfaces;
 using CalculadoraAnestesica.DbContext.Tables;
 using CalculadoraAnestesica.DependencyInjection.IoC;
+using CalculadoraAnestesica.Helpers;
 using CalculadoraAnestesica.Model.Interfaces;
+using CalculadoraAnestesica.Shared;
 
 namespace CalculadoraAnestesica.ApplicationHandler
 {
@@ -13,24 +15,24 @@ namespace CalculadoraAnestesica.ApplicationHandler
 	{
         public static void InitDatabase()
         {
-            string pathAppData = Environment.GetFolderPath(Environment
+            string pathAppData = Environment
+                .GetFolderPath(Environment
                 .SpecialFolder
                 .LocalApplicationData
             );
 
-            DatabaseHandler.Instance.CreateDatabase(
-               dbPath: Path.Combine(pathAppData, "userdb")
-            );
+            DatabaseHandler.Instance
+              .CreateDatabase(Path.Combine(pathAppData, "userdb"));
         }
 
         public static void AppStart()
         {
-            DatabaseHandler
-            .Instance
-            .CreateTables(new List<Type>()
-            {
-                Resolver.GetType<IUserContext>()
-            });
+            DatabaseHandler.Instance
+              .CreateTables(new List<Type>()
+              {
+                  Resolver.GetType<IUserContext>(),
+                  Resolver.GetType<IFavoriteMedications>()
+              });
 
             if (IsFirstAccess())
             {
@@ -48,8 +50,8 @@ namespace CalculadoraAnestesica.ApplicationHandler
         public static bool IsFirstAccess()
         {
             return Resolver.Get<IUserContextDataAccess>()
-                  .SelectAllItems()
-                  .Count == 0;
+                .SelectAllItems()
+                .Count == 0;
         }
     }
 }

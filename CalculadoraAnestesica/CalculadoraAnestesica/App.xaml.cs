@@ -11,6 +11,7 @@ using CalculadoraAnestesica.Model.Interfaces;
 using CalculadoraAnestesica.View;
 using CalculadoraAnestesica.View.Intercaces;
 using CalculadoraAnestesica.ViewModel.Interfaces;
+using DevExpress.XamarinForms.CollectionView;
 using Syncfusion.Licensing;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -21,6 +22,7 @@ namespace CalculadoraAnestesica
     {
         public App()
         {
+            DevExpress.XamarinForms.DataGrid.Initializer.Init();
             InitializeComponent();
             InitApp();
             InitNavigation();
@@ -28,9 +30,6 @@ namespace CalculadoraAnestesica
 
         private void InitNavigation()
         {
-            var appCenterView = NavigationControl
-                .GetPage<IAppCenterView, IAppCenterViewModel>();
-
             MainPage = new NavigationPage(new TabbedPageView());
         }
 

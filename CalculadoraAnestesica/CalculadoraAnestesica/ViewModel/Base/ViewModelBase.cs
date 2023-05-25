@@ -8,7 +8,7 @@ namespace CalculadoraAnestesica.ViewModel.Base
     public class ViewModelBase : INotifyPropertyChanged, IViewModelBase
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] String propertyName = "")
+        public void RaisePropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
