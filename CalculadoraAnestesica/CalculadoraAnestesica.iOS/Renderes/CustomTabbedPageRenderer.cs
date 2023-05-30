@@ -19,11 +19,7 @@ namespace CalculadoraAnestesica.iOS.Renderes
         {
             if (Element is TabbedPage tabs)
             {
-                //tabs.UnselectedTabColor = Color.Gray;
-                //tabs.SelectedTabColor = Color.Black;
-
                 TabBar.BackgroundColor = UIColor.White;
-                //TabBar.SelectedImageTintColor = UIColor.Black;
 
                 for (int i = 0; i < TabBar.Items.Length; i++)
                 {
@@ -50,7 +46,7 @@ namespace CalculadoraAnestesica.iOS.Renderes
             };
 
             item.SetTitleTextAttributes(textAtt, UIControlState.Application);
-            item.Image = ScalingImageToSize(item.Image, new CGSize(55, 55));
+            item.Image = ScalingImageToSize(item.Image, new CGSize(40, 40));
         }
 
         public UIImage ScalingImageToSize(UIImage sourceImage, CGSize newSize)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using DevExpress.XamarinForms.CollectionView;
 using Foundation;
 using Syncfusion.XForms.iOS.TabView;
 using UIKit;
@@ -24,6 +24,7 @@ namespace CalculadoraAnestesica.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
+            DevExpress.XamarinForms.DataGrid.iOS.Initializer.Init();
             LoadApplication(new App());
             SfTabViewRenderer.Init();
             return base.FinishedLaunching(app, options);
