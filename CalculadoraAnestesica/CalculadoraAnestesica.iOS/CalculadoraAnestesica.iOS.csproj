@@ -161,6 +161,7 @@
     <BundleResource Include="Resources\cardiogram.png" />
     <BundleResource Include="Resources\pill_icon.png" />
     <BundleResource Include="Resources\logo_icon.png" />
+    <BundleResource Include="Resources\filter_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Renderes\" />
