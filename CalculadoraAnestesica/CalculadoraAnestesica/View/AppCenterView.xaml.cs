@@ -36,6 +36,13 @@ namespace CalculadoraAnestesica.View
             InitializeComponent();
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+
+        }
+
         int lastIndex = 0;
         void TapGestureRecognizer_Tapped(System.Object sender, System.EventArgs e)
         {
@@ -57,16 +64,22 @@ namespace CalculadoraAnestesica.View
 
                 cView.ItemsSource = medications;
             }
-            else if (newCollection)
+            else if (newCollection && string.IsNullOrEmpty(appCenterViewModel.EntryWeight))
             {
                 medications = appCenterViewModel.GetMedications(source);
+                cView.ItemsSource = medications;
+            }
+            else if (newCollection && !string.IsNullOrEmpty(appCenterViewModel.EntryWeight))
+            {
+                medications = appCenterViewModel.GetMedications(source);
+                var itemsSource = appCenterViewModel.ExecuteCalculation(medications);
                 cView.ItemsSource = medications;
             }
             else
             {
                 var list = cView.ItemsSource.Cast<Medicamento>();
                 var itemsSource = appCenterViewModel.ExecuteCalculation(list.ToList());
-                cView.ItemsSource = itemsSource;
+                cView.ItemsSource = medications;
             }
 
             Grid grid = (Grid)((Frame)sender).Content;

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using CalculadoraAnestesica.DataAccess.Base;
 using CalculadoraAnestesica.DataAccess.Interfaces;
 using CalculadoraAnestesica.DbContext.Tables;
@@ -20,18 +23,11 @@ namespace CalculadoraAnestesica.DataAccess
         private string GroupName { get; set; }
         private string NomeMedicamento { get; set; }
         private string DescricaoMedicamento { get; set; }
+        private static Mutex Mutex;
 
-        public void InsertMedicamento(
-            string tableName,
-            string value,
-            string descricao,
-            int id_grupo)
+        public MedicamentosDataAccess()
         {
-            Connection.Execute($@"
-                INSERT INTO {tableName}
-                (nome_medicamento, descricao_medicamento, id_grupo, is_favorite)
-                VALUES ('{value}', '{descricao}', '{id_grupo}', 0);"
-            );
+            Mutex = new Mutex();
         }
 
         public List<Medicamento> GetMedicamentos(string tableName)
@@ -66,14 +62,29 @@ namespace CalculadoraAnestesica.DataAccess
             return GetMedicamentoInternal(tableName);
         }
 
-        public void CreateMedicamentosTables()
-        {
-            LoadMedicamentosHtml();
-        }
-
         public List<Medicamento> GetMedicamento(string tableName)
         {
             return GetMedicamentoInternal(tableName);
+        }
+
+        #region HTML
+
+        public void InsertMedicamento(
+                string tableName,
+                string value,
+                string descricao,
+                int id_grupo)
+        {
+            Connection.Execute($@"
+                INSERT INTO {tableName}
+                (nome_medicamento, descricao_medicamento, id_grupo, is_favorite)
+                VALUES ('{value}', '{descricao}', '{id_grupo}', 0);"
+            );
+        }
+
+        public void CreateMedicamentosTables()
+        {
+            LoadMedicamentosHtml();
         }
 
         private void LoadMedicamentosHtml()
@@ -254,16 +265,23 @@ namespace CalculadoraAnestesica.DataAccess
                 VALUES ('{grupoNome}');"
             );
         }
+        #endregion
 
         public List<GrupoNomesDTO> GetGrupoNomes()
         {
+            Mutex.WaitOne();
+
             string tableName = TablesSchema.GRUPO_MEDICAMENTOS;
 
-            return Connection.CreateCommand($@"
+            var grupoNomes = Connection.CreateCommand($@"
                     SELECT {tableName}.nome_grupo AS NomeGrupo,
                            {tableName}.id as Id
                       FROM {tableName}")
-           .ExecuteQuery<GrupoNomesDTO>();
+            .ExecuteQuery<GrupoNomesDTO>();
+
+            Mutex.ReleaseMutex();
+
+            return grupoNomes;
         }
 
         public GrupoNomesDTO GetGrupoNome(string nome)

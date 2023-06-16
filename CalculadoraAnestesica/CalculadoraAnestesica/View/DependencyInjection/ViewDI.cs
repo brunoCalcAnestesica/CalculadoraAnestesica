@@ -11,6 +11,7 @@ namespace CalculadoraAnestesica.View.DependencyInjection
         {
             services.AddTransient<IAppCenterView, AppCenterView>();
             services.AddTransient<IHemodinamicoCalcView, HemodinamicoCalcView>();
+            services.AddTransient<IFavoriteMedicationsView, FavoriteMedicationsView>();
         }
     }
 }

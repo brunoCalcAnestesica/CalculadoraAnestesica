@@ -60,10 +60,14 @@
     <None Remove="Model\Base\" />
     <None Remove="EmbeddedResources\MedCalcHemodinamico.xlsx" />
     <None Remove="Helpers\" />
+    <None Remove="EmbeddedResources\userdb.db" />
+    <None Remove="Constants\" />
+    <None Remove="Components\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\AnestCalc.html" />
     <EmbeddedResource Include="EmbeddedResources\MedCalcHemodinamico.xlsx" />
+    <EmbeddedResource Include="EmbeddedResources\userdb.db" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="EmbeddedResources\" />
@@ -96,5 +100,7 @@
     <Folder Include="Converters\" />
     <Folder Include="Model\Base\" />
     <Folder Include="Helpers\" />
+    <Folder Include="Constants\" />
+    <Folder Include="Components\" />
   </ItemGroup>
 </Project>

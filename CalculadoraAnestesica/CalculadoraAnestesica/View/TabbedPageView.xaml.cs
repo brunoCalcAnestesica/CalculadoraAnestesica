@@ -21,10 +21,10 @@ namespace CalculadoraAnestesica.View
             hemodinamicoCalcView.IconImageSource = "cardiogram.png";
 
             var appCenterView = NavigationControl.GetPage<IAppCenterView, IAppCenterViewModel>();
-            appCenterView.Title = "Cálculo";
+            appCenterView.Title = "Medicamentos";
             appCenterView.IconImageSource = "pill_icon.png";
 
-            var favoriteView = NavigationControl.GetPage<IAppCenterView, IFavoriteViewModel>();
+            var favoriteView = NavigationControl.GetPage<IFavoriteMedicationsView, IFavoriteViewModel>();
             favoriteView.Title = "Favoritos";
             favoriteView.IconImageSource = "star_icon.png";
 

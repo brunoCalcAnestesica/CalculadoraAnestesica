@@ -9,7 +9,6 @@ namespace CalculadoraAnestesica.Model.Base
     {
         [PrimaryKey, AutoIncrement]
         public string Id { get; set; }
-        public string Teste { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] String propertyName = "")

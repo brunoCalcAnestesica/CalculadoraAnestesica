@@ -22,7 +22,6 @@ namespace CalculadoraAnestesica
     {
         public App()
         {
-            DevExpress.XamarinForms.DataGrid.Initializer.Init();
             InitializeComponent();
             InitApp();
             InitNavigation();
@@ -36,7 +35,6 @@ namespace CalculadoraAnestesica
         private void InitApp()
         {
             AppHandler.CreateIoC();
-            AppHandler.InitDatabase();
             AppHandler.AppStart();
         }
     }

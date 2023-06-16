@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using CalculadoraAnestesica.DataAccess.Interfaces;
@@ -18,36 +19,62 @@ namespace CalculadoraAnestesica.ViewModel
     {
         private List<Medicamento> FavMedications;
 
+        private ObservableCollection<GroupFavoriteMedications> favoriteMedications;
+        public ObservableCollection<GroupFavoriteMedications> FavoriteMedications
+        {
+            get { return favoriteMedications; }
+            set
+            {
+                favoriteMedications = value;
+                RaisePropertyChanged();
+            }
+        }
+
         public FavoriteViewModel() : base()
         {
             FavMedications = new List<Medicamento>();
+            FavoriteMedications = new ObservableCollection<GroupFavoriteMedications>();
+            Task.Run(SetFavoriteMedsInMemory);
         }
 
         public override void OnAppearing()
+        {
+            CheckHasValuesChanged();
+            FillFavoriteMedications();
+        }
+
+        private void FillFavoriteMedications()
         {
             var favoriteMeds = Resolver
                 .Get<IFavoriteMedicationsDataAccess>()
                 .SelectAllItems();
 
-            Task.Run(() => SetFavoriteMedsInMemory(favoriteMeds));
+            var listFavMeds = new List<GroupFavoriteMedications>();
 
             foreach (var med in favoriteMeds)
             {
-                if (!GrupoNomes.Any(x => x.NomeGrupo == med.GroupName))
+                if (!listFavMeds.Any(x => x.GroupName == med.GroupName))
                 {
-                    GrupoNomes.Add(new GrupoNomesDTO
-                    {
-                        Id = med.IdGrupo,
-                        NomeGrupo = med.GroupName
-                    });
+                    var list = _medicationDataAccess
+                        .GetFavoriteMedications(Utils.ConvertToTableSchema(med.GroupName));
+
+                    if (list != null && list.Any())
+                        listFavMeds.Add(new GroupFavoriteMedications(med.GroupName, list));
                 }
             }
 
+            FavoriteMedications = new ObservableCollection<GroupFavoriteMedications>(listFavMeds);
             AuxList = new List<GrupoNomesDTO>(GrupoNomes);
+
+            ExecuteCalculationFavoriteMed();
         }
 
-        private void SetFavoriteMedsInMemory(IList<FavoriteMedications> favoriteMeds)
+        private void SetFavoriteMedsInMemory()
         {
+            var favoriteMeds = Resolver
+                .Get<IFavoriteMedicationsDataAccess>()
+                .SelectAllItems();
+
             foreach (var med in favoriteMeds)
             {
                 if (!FavMedications.Any(x => x.IdGrupo == med.IdGrupo))
@@ -60,19 +87,32 @@ namespace CalculadoraAnestesica.ViewModel
             }
         }
 
-        public override List<Medicamento> ExecuteCalculation(List<Medicamento> medicamentos)
+        private void ExecuteCalculationFavoriteMed()
         {
-            var group =_medicationDataAccess
-                .GetGrupoNomeById(medicamentos.FirstOrDefault().IdGrupo);
-
-            var meds = GetMedications(new GrupoNomesDTO { NomeGrupo = group });
-            return base.ExecuteCalculation(meds);
+            foreach (var item in FavoriteMedications)
+                base.ExecuteCalculation(item);
         }
 
         public override List<Medicamento> GetMedications(GrupoNomesDTO grupo)
         {
             return _medicationDataAccess
                 .GetFavoriteMedications(Utils.ConvertToTableSchema(grupo.NomeGrupo));
+        }
+
+        protected override void FavotireIconClicked(object item)
+        {
+            base.FavotireIconClicked(item);
+
+            if (!((Medicamento)item).IsFavorite)
+            {
+                GroupFavoriteMedications model = FavoriteMedications
+                    .FirstOrDefault(x => x.Contains((Medicamento)item));
+
+                if (model.Count > 1)
+                    model.Remove((Medicamento)item);
+                else
+                    FavoriteMedications.Remove(model);
+            }
         }
     }
 }

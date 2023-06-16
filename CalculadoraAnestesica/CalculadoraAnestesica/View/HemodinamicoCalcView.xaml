@@ -4,108 +4,55 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:CalculadoraAnestesica.View.Base"
     x:Class="CalculadoraAnestesica.View.HemodinamicoCalcView"
-    xmlns:pancake="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
-    xmlns:dxg="http://schemas.devexpress.com/xamarin/2014/forms/datagrid"
-    BackgroundColor="White">
+    xmlns:ctrl="clr-namespace:CalculadoraAnestesica.Components"
+    xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+    ios:Page.UseSafeArea="true"
+    BackgroundColor="#F5F5F5">
     <Grid
         RowDefinitions="*">
         <Grid
-            RowDefinitions="85, Auto, *">
-             <pancake:PancakeView
-                CornerRadius="0,0,5,10"
-                Padding="0,30,0,0">
-                <pancake:PancakeView.Background>
-                    <LinearGradientBrush
-                        EndPoint="1.20,0">
-                        <GradientStop
-                            Color="#006FCE"
-                            Offset="0"/>
-                        <GradientStop
-                            Color="#00FFF5"
-                            Offset="1"/>
-                        </LinearGradientBrush>
-                </pancake:PancakeView.Background>
-                <Grid
-                    RowDefinitions="*"
-                    ColumnDefinitions="*"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Fill">
-                    <Label
-                        FontAttributes="Bold"
-                        x:Name="NameApp"
-                        Text="Calculadora"
-                        TextColor="White"
-                        VerticalOptions="Start"
-                        FontSize="Large"
-                        Margin="10, -5, 0, 0"/>
-                     <Label
-                        FontAttributes="Bold"
-                        FontSize="Large"
-                        x:Name="NameApp2"
-                        TextColor="White"
-                        Text="Anestésica"
-                        VerticalOptions="Start"
-                        Margin="10, 18, 0, 0"/>
-                    <Image
-                        Margin="15,-20,0,0"
-                        Source="logo_icon.png"
-                        HeightRequest="40"
-                        WidthRequest="40"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"/>
-                </Grid>
-            </pancake:PancakeView>
+            RowDefinitions="Auto, Auto, Auto, *">
+             <ctrl:HeaderApp
+                UseSearchBar="False">
+                <ctrl:HeaderApp.HeightRequest>
+                    <OnPlatform x:TypeArguments="x:Double">
+                        <On Platform="iOS" Value="120"/>
+                        <On Platform="Android" Value="100"/>
+                    </OnPlatform>
+                </ctrl:HeaderApp.HeightRequest>
+            </ctrl:HeaderApp>
+            <ctrl:InputsCalculation
+                Grid.Row="1"
+                EntryAgeText="{Binding EntryAge, Mode=TwoWay}"
+                EntryWeightText="{Binding EntryWeight, Mode=TwoWay}"/>
             <StackLayout
-                Spacing="15"
-                HorizontalOptions="Center"
-                Orientation="Horizontal"
-                Padding="10"
-                Grid.Row="1">
-                <StackLayout>
-                    <Label
-                        HorizontalTextAlignment="Center"
-                        Text="Peso"
-                        FontSize="13"
-                        FontAttributes="Bold"
-                        TextColor="#006FCE"/>
-                    <Entry
-                        TextColor="Gray"
-                        HorizontalTextAlignment="Center"
-                        WidthRequest="100"
-                        HeightRequest="35"
-                        Keyboard="Numeric"
-                        Text="{Binding EntryPeso}"/>
-                </StackLayout>
-                <StackLayout>
-                    <Label
-                        HorizontalTextAlignment="Center"
-                        Text="Idade"
-                        FontSize="13"
-                        FontAttributes="Bold"
-                        TextColor="#006FCE"/>
-                     <Entry
-                        TextColor="Gray"
-                        HorizontalTextAlignment="Center"
-                        WidthRequest="100"
-                        HeightRequest="35"
-                        Keyboard="Numeric"
-                        Text="{Binding EntryIdade}"/>
-                </StackLayout>
-                <StackLayout
-                    Margin="0,20,0,0"
-                    VerticalOptions="Center">
-                    <Picker
-                        TextColor="Gray"
-                        SelectedIndexChanged="Picker_SelectedIndexChanged"
-                        ItemsSource="{Binding PickerItems}"
-                        SelectedItem="{Binding SelectedItemPicker}"
-                        HeightRequest="35"
-                        WidthRequest="110"/>
-                </StackLayout>
+                HorizontalOptions="End"
+                Grid.Row="2"
+                Orientation="Horizontal">
+                <Picker
+                    x:Name="picker"
+                    IsVisible="False"
+                    SelectedIndexChanged="Picker_SelectedIndexChanged"
+                    ItemsSource="{Binding PickerItems}"
+                    SelectedItem="{Binding SelectedItemPicker}"/>
+                <Label
+                    VerticalTextAlignment="Center"
+                    Text="{Binding LabelSelectedItemPicker}"
+                    FontSize="13"
+                    TextColor="Gray"/>
+                <ImageButton
+                    Clicked="ImageButton_Clicked"
+                    Margin="0,0,10,0"
+                    Source="filter_icon.png"
+                    HeightRequest="40"
+                    WidthRequest="40"
+                    BackgroundColor="#FFF"
+                    CornerRadius="20"
+                    HorizontalOptions="End"/>
             </StackLayout>
             <CollectionView
                 ItemsSource="{Binding HemodinamicoModelList}"
-                Grid.Row="2"
+                Grid.Row="3"
                 EmptyView="A lista está vazia.">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
@@ -113,20 +60,20 @@
                             Padding="10, 0, 10, 0"
                             Margin="0,5,0,0">
                             <Frame
+                                CornerRadius="15"
                                 BorderColor="#EEE"
                                 HasShadow="False">
                                 <Grid>
                                     <Label
                                         FontSize="14"
                                         HorizontalTextAlignment="Start"
-                                        TextColor="Black"
+                                        TextColor="#003766"
                                         FontAttributes="Bold"
                                         Text="{Binding Text}"/>
                                     <Label
                                         FontSize="14"
                                         HorizontalTextAlignment="End"
                                         TextColor="Black"
-                                        FontAttributes="Bold"
                                         Text="{Binding Value}"/>
                                 </Grid>
                             </Frame>

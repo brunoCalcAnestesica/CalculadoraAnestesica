@@ -6,7 +6,9 @@ namespace CalculadoraAnestesica.Shared
 {
 	public static class AppSource
 	{
-		public static List<Medicamento> Medicamentos { get; set; }
+		public static double? Idade;
+		public static double? Peso;
+		public static List<Medicamento> MedicamentosList;
 	}
 }
 

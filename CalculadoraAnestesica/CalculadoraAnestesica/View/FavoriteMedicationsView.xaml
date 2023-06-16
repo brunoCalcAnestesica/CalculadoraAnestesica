@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<local:ViewBase
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:CalculadoraAnestesica.View.Base"
+    x:Class="CalculadoraAnestesica.View.FavoriteMedicationsView"
+    xmlns:ctrl="clr-namespace:CalculadoraAnestesica.Components"
+    xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+    ios:Page.UseSafeArea="true"
+    x:Name="favoriteView"
+    BackgroundColor="#F5F5F5">
+    <Grid
+        RowDefinitions="*">
+        <Grid
+            RowDefinitions="Auto, Auto, *">
+            <ctrl:HeaderApp
+                IsHeaderVisible="{Binding IsHeaderVisible}"
+                IsSearchViewVisible="{Binding IsSearchBarVisible}"
+                SearchIconCommand="{Binding SearchIconCommand}">
+                <ctrl:HeaderApp.HeightRequest>
+                    <OnPlatform x:TypeArguments="x:Double">
+                        <On Platform="iOS" Value="120"/>
+                        <On Platform="Android" Value="100"/>
+                    </OnPlatform>
+                </ctrl:HeaderApp.HeightRequest>
+            </ctrl:HeaderApp>
+            <ctrl:InputsCalculation
+                Grid.Row="1"
+                EntryAgeText="{Binding EntryAge}"
+                EntryWeightText="{Binding EntryWeight}"/>
+            <CollectionView
+                Margin="5"
+                ItemsSource="{Binding FavoriteMedications}"
+                Grid.Row="2"
+                IsGrouped="True">
+                <CollectionView.GroupHeaderTemplate>
+                    <DataTemplate>
+                        <StackLayout
+                            Margin="5">
+                            <Frame
+                                HeightRequest="10"
+                                HasShadow="False"
+                                CornerRadius="15"
+                                BackgroundColor="#FFF">
+                                <Grid>
+                                    <Label
+                                        Margin="0,-5,0,0"
+                                        HorizontalOptions="Start"
+                                        VerticalOptions="Center"
+                                        Text="{Binding GroupName}"
+                                        FontSize="15"
+                                        FontAttributes="Bold"
+                                        TextColor="#003766"/>
+                                </Grid>    
+                            </Frame>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.GroupHeaderTemplate>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout
+                            Margin="0,0,0,15"
+                            Padding="0,0,20,0">
+                            <Grid
+                                Margin="0,0,0,0">
+                                <ImageButton
+                                    Source="{Binding IsFavorite, Converter={StaticResource boolToIconConverter}}"
+                                    xct:IconTintColorEffect.TintColor="Green"
+                                    HeightRequest="40"
+                                    WidthRequest="40"
+                                    HorizontalOptions="Start"
+                                    BackgroundColor="Transparent"
+                                    Command="{Binding BindingContext.FavoriteIconCommand, Source={x:Reference favoriteView}}"
+                                    CommandParameter="{Binding .}"/>
+                                <StackLayout
+                                    HorizontalOptions="FillAndExpand"
+                                    Margin="40,0,0,0">
+                                    <Label
+                                        LineBreakMode="WordWrap"
+                                        FontAttributes="Bold"
+                                        HorizontalTextAlignment="Start"
+                                        TextColor="#006FCE"
+                                        Text="{Binding NomeMedicamento}"
+                                        FontSize="13"/>
+                                    <Label
+                                        LineBreakMode="WordWrap"
+                                        HorizontalTextAlignment="Start"
+                                        VerticalTextAlignment="Center"
+                                        TextColor="#006FCE"
+                                        Text="{Binding DosagemMedicamento}"
+                                        FontSize="12"/>
+                                </StackLayout>
+                                <Label
+                                    Margin="100,0,0,0"
+                                    LineBreakMode="WordWrap"
+                                    VerticalTextAlignment="Center"
+                                    HorizontalTextAlignment="End"
+                                    TextColor="#003766"
+                                    Text="{Binding Resultado}"
+                                    FontSize="13"/> 
+                            </Grid>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
+</local:ViewBase>
+

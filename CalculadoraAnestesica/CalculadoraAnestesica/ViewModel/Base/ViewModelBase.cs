@@ -13,6 +13,17 @@ namespace CalculadoraAnestesica.ViewModel.Base
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        public ViewModelBase()
+        {
+            PropertyChanged += ViewModelBase_PropertyChanged;
+        }
+
+        protected virtual void ViewModelBase_PropertyChanged(object sender,
+            PropertyChangedEventArgs e)
+        {
+
+        }
+
         public virtual void AfterBinding()
         {
         }

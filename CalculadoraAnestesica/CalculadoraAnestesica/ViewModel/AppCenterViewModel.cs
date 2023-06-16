@@ -35,31 +35,6 @@ namespace CalculadoraAnestesica.ViewModel
             SetFirstAccess();
         }
 
-        public override void OnAppearing()
-        {
-            base.OnAppearing();
-            //var grupoMedicamentos = GetGrupoNomes();
-
-            //List<Medicamentos> list = new List<Medicamentos>();
-
-            //for (int i = 0; i < grupoMedicamentos.Count; i++)
-            //{
-            //    var source = SetMedicamentos(
-            //        Utils.ConvertToTableSchema(grupoMedicamentos[i].NomeGrupo),
-            //        0,
-            //        0
-            //    );
-
-            //    list.Add(new Medicamentos(
-            //        grupoMedicamentos[i].NomeGrupo,
-            //        new ObservableCollection<Medicamento>(source))
-            //    );
-            //}
-
-            //Medicamentos = new ObservableCollection<Medicamentos>(list);
-            //AuxList = list;
-        }
-
         private void SetFirstAccess()
         {
             if (AppHandler.IsFirstAccess())

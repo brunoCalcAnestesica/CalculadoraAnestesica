@@ -4,136 +4,33 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="CalculadoraAnestesica.View.AppCenterView"
     xmlns:local="clr-namespace:CalculadoraAnestesica.View.Base"
-    xmlns:pancake="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
     NavigationPage.HasNavigationBar="False"
     x:Name="appCenterView"
     xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+    xmlns:ctrl="clr-namespace:CalculadoraAnestesica.Components"
+    xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
+    ios:Page.UseSafeArea="true"
     BackgroundColor="#F5F5F5">
     <Grid
         RowDefinitions="*">
         <Grid
-            RowDefinitions="85, Auto, *">
-            <pancake:PancakeView
-                Padding="0,30,0,0">
-                <pancake:PancakeView.Background>
-                    <LinearGradientBrush
-                        EndPoint="1.20,0">
-                        <GradientStop
-                            Color="#006FCE"
-                            Offset="0"/>
-                        <GradientStop
-                            Color="#00FFF5"
-                            Offset="1"/>
-                        </LinearGradientBrush>
-                </pancake:PancakeView.Background>
-                <Grid
-                    RowDefinitions="*"
-                    ColumnDefinitions="*"
-                    HorizontalOptions="Fill"
-                    VerticalOptions="Fill">
-                    <Label
-                        IsVisible="{Binding IsHeaderVisible}"
-                        FontAttributes="Bold"
-                        x:Name="NameApp"
-                        Text="Calculadora"
-                        TextColor="White"
-                        VerticalOptions="Start"
-                        FontSize="Large"
-                        Margin="10, -5, 0, 0"/>
-                     <Label
-                        IsVisible="{Binding IsHeaderVisible}"
-                        FontAttributes="Bold"
-                        FontSize="Large"
-                        x:Name="NameApp2"
-                        TextColor="White"
-                        Text="Anestésica"
-                        VerticalOptions="Start"
-                        Margin="10, 18, 0, 0"/>
-                    <Image
-                        IsVisible="{Binding IsHeaderVisible}"
-                        Margin="15,-20,0,0"
-                        Source="logo_icon.png"
-                        HeightRequest="40"
-                        WidthRequest="40"
-                        HorizontalOptions="Center"
-                        VerticalOptions="Center"/>
-                     <ImageButton
-                        IsVisible="{Binding IsHeaderVisible}"
-                        Command="{Binding SearchIconCommand}"
-                        Margin="0,-20,10,0"
-                        Source="search_icon.png"
-                        HeightRequest="55"
-                        WidthRequest="55"
-                        HorizontalOptions="End"
-                        VerticalOptions="Center"/>
-                    <Frame
-                        Margin="5,0,85,10"
-                        IsVisible="{Binding IsSearchBarVisible}"
-                        BackgroundColor="White"
-                        HasShadow="False"
-                        CornerRadius="15">
-                       <SearchBar
-                            Text="{Binding SearchBarText}"
-                            Margin="-15"/>
-                    </Frame>
-                    <Button
-                        IsVisible="{Binding IsSearchBarVisible}"
-                        Command="{Binding SearchIconCommand}"
-                        Margin="0,0,10,10"
-                        VerticalOptions="Center"
-                        HorizontalOptions="End"
-                        Text="Cancelar"
-                        TextColor="White"
-                        FontAttributes="Bold"
-                        FontSize="17"/>
-                </Grid>
-            </pancake:PancakeView>
-            <Grid
-                ColumnSpacing="75"
-                Margin="0,15,0,0"
-                HorizontalOptions="Center"
-                VerticalOptions="Center"
-                RowDefinitions="Auto, Auto"
-                ColumnDefinitions="Auto, Auto"
-                Grid.Row="1">
-                <Label
-                    Margin="0,0,25,0"
-                    HorizontalTextAlignment="Center"
-                    Text="PESO"
-                    FontSize="13"
-                    FontAttributes="Bold"
-                    TextColor="#005299"/>
-                <StackLayout
-                    Orientation="Horizontal"
-                    Grid.Row="1">
-                    <Entry
-                        Text="{Binding EntryWeight}"
-                        x:Name="entryPeso"
-                        HorizontalTextAlignment="Center"
-                        WidthRequest="75"
-                        Keyboard="Numeric"
-                        TextColor="#005299"/>
-                    <Label
-                        VerticalTextAlignment="Center"
-                        Text="KG"
-                        TextColor="#005299"
-                        FontSize="15"/>
-                </StackLayout>
-                <Label
-                    FontAttributes="Bold"
-                    HorizontalTextAlignment="Center"
-                    Text="IDADE"
-                    FontSize="13"
-                    TextColor="#005299"
-                    Grid.Column="1"/>
-                <Entry
-                    Keyboard="Numeric"
-                    HorizontalTextAlignment="Center"
-                    WidthRequest="75"
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    TextColor="#005299"/>
-            </Grid>
+            RowDefinitions="Auto, Auto, *">
+            <ctrl:HeaderApp
+                SearchBarText="{Binding SearchBarText}"
+                IsHeaderVisible="{Binding IsHeaderVisible}"
+                IsSearchViewVisible="{Binding IsSearchBarVisible}"
+                SearchIconCommand="{Binding SearchIconCommand}">
+                <ctrl:HeaderApp.HeightRequest>
+                    <OnPlatform x:TypeArguments="x:Double">
+                        <On Platform="iOS" Value="120"/>
+                        <On Platform="Android" Value="100"/>
+                    </OnPlatform>
+                </ctrl:HeaderApp.HeightRequest>
+            </ctrl:HeaderApp>
+            <ctrl:InputsCalculation
+                Grid.Row="1"
+                EntryAgeText="{Binding EntryAge}"
+                EntryWeightText="{Binding EntryWeight}"/>
             <ScrollView
                 Grid.Row="2">
                 <StackLayout
@@ -224,98 +121,6 @@
                     </BindableLayout.ItemTemplate>
                 </StackLayout>
             </ScrollView>
-            
-
-            <!--<ListView
-                BackgroundColor="Transparent"
-                ItemsSource="{Binding Medicamentos}"
-                x:Name="cView"
-                IsGroupingEnabled="True"
-                Margin="5"
-                RowHeight="75"
-                HasUnevenRows="True"
-                x:FieldModifier="public"
-                ItemSelected="cView_ItemSelected"
-                Grid.Row="2">
-                <ListView.GroupHeaderTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout
-                                Margin="5">
-                                <Frame
-                                    HasShadow="False"
-                                    CornerRadius="15"
-                                    BackgroundColor="#FFF">
-                                    <Grid>
-                                        <Label
-                                            HorizontalOptions="Start"
-                                            VerticalOptions="Center"
-                                            Text="{Binding GrupoMedicamento}"
-                                            FontSize="15"
-                                            FontAttributes="Bold"
-                                            TextColor="#003766">
-                                        </Label>
-                                        <Image
-                                            x:Name="image"
-                                            Source="arrow_icon.png"
-                                            HorizontalOptions="End"
-                                            HeightRequest="30"
-                                            WidthRequest="30"/>
-                                    </Grid>    
-                                </Frame>
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.GroupHeaderTemplate>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <StackLayout
-                                HeightRequest="500"
-                                Padding="0,0,20,0">
-                                <Grid
-                                    Margin="0,0,0,0">
-                                    <ImageButton
-                                        Source="{Binding IsFavorite, Converter={StaticResource boolToIconConverter}}"
-                                        xct:IconTintColorEffect.TintColor="Green"
-                                        HeightRequest="40"
-                                        WidthRequest="40"
-                                        HorizontalOptions="Start"
-                                        BackgroundColor="Transparent"
-                                        Command="{Binding BindingContext.FavoriteIconCommand, Source={x:Reference appCenterView}}"
-                                        CommandParameter="{Binding .}"/>
-                                    <StackLayout
-                                        HorizontalOptions="FillAndExpand"
-                                        Margin="40,15,0,0">
-                                        <Label
-                                            LineBreakMode="WordWrap"
-                                            HorizontalTextAlignment="Start"
-                                            VerticalTextAlignment="Center"
-                                            FontAttributes="Bold"
-                                            TextColor="#006FCE"
-                                            Text="{Binding DosagemMedicamento}"
-                                            FontSize="13"/>
-                                        <Label
-                                            LineBreakMode="WordWrap"
-                                            HorizontalTextAlignment="Start"
-                                            TextColor="#006FCE"
-                                            Text="{Binding NomeMedicamento}"
-                                            FontSize="12"/>
-                                    </StackLayout>
-                                    <Label
-                                        Margin="100,0,0,0"
-                                        LineBreakMode="WordWrap"
-                                        VerticalTextAlignment="Center"
-                                        HorizontalTextAlignment="End"
-                                        TextColor="#003766"
-                                        Text="{Binding Resultado}"
-                                        FontSize="13"/> 
-                                </Grid>
-                            </StackLayout>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>--> 
         </Grid>
     </Grid>
 </local:ViewBase>

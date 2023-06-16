@@ -16,11 +16,10 @@ using System.Diagnostics;
 
 namespace CalculadoraAnestesica.ViewModel.Base
 {
-	public class MedicationsViewModelBase : ViewModelBase
+	public class MedicationsViewModelBase : CalculationViewModelBase
 	{
         protected readonly IMedicamentosDataAccess _medicationDataAccess;
         protected List<GrupoNomesDTO> AuxList;
-        protected List<Medicamento> MedicamentosList;
         public List<Medicamento> FilteredMedicamentosList;
         public bool IsFiltering;
 
@@ -99,17 +98,6 @@ namespace CalculadoraAnestesica.ViewModel.Base
             }
         }           
 
-        private string entryWeight;
-        public string EntryWeight
-        {
-            get { return entryWeight; }
-            set
-            {
-                entryWeight = value;
-                RaisePropertyChanged();
-            }
-        }
-
         private bool isParametersVisible;
         public bool IsParametersVisible
         {
@@ -151,62 +139,46 @@ namespace CalculadoraAnestesica.ViewModel.Base
             }
         }
 
-        public ICommand GroupHeaderTappedCommand
-        {
-            get
-            {
-                return new Command((item) =>
-                {
-                    var group = item;
-                });
-            }
-        }
-
         public MedicationsViewModelBase()
         {
-            Task.Run(() =>
-            {
-                var grupos = Resolver
-                   .Get<IMedicamentosDataAccess>()
-                   .GetGrupoNomes();
-
-                foreach (var grupo in grupos)
-                {
-                    var med = Resolver
-                        .Get<IMedicamentosDataAccess>()
-                        .GetMedicamento(Utils.ConvertToTableSchema(grupo.NomeGrupo));
-
-                    if (MedicamentosList is null)
-                        MedicamentosList = new List<Model.Medicamento>();
-
-                    MedicamentosList.AddRange(med);
-                }
-            });
-
             _medicationDataAccess = Resolver.Get<IMedicamentosDataAccess>();
             Medicamentos = new ObservableCollection<Medicamentos>();
             GrupoNomes = new ObservableCollection<GrupoNomesDTO>();
             AuxList = new List<GrupoNomesDTO>();
-            PropertyChanged += MedicationsViewModelBase_PropertyChanged;
         }
 
         public override void OnAppearing()
         {
-            base.OnAppearing();
-            var grupos = _medicationDataAccess.GetGrupoNomes();
-
-            if (grupos != null)
+            try
             {
-                foreach (var item in grupos)
-                    GrupoNomes.Add(item);
-            }
+                if (!GrupoNomes.Any())
+                {
+                    List<GrupoNomesDTO> grupos = _medicationDataAccess
+                        .GetGrupoNomes()
+                        .OrderBy(x => x.NomeGrupo)
+                        .ToList();
 
-            AuxList = new List<GrupoNomesDTO>(GrupoNomes);
+                    if (grupos != null)
+                    {
+                        foreach (var item in grupos)
+                            GrupoNomes.Add(item);
+                    }
+
+                    AuxList = new List<GrupoNomesDTO>(GrupoNomes);
+                }
+
+                base.OnAppearing();
+            }
+            catch (Exception ex)
+            {
+                MessageHelper.ShowErrorMessage();
+            }
         }
 
-        private void MedicationsViewModelBase_PropertyChanged(object sender,
-            PropertyChangedEventArgs e)
+        protected override void ViewModelBase_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            base.ViewModelBase_PropertyChanged(sender, e);
+
             switch (e.PropertyName)
             {
                 case nameof(SearchBarText):
@@ -218,42 +190,36 @@ namespace CalculadoraAnestesica.ViewModel.Base
             }
         }
 
-        private void FavotireIconClicked(object item)
+        protected virtual void FavotireIconClicked(object item)
         {
             try
             {
-                var model = (Medicamento)item;
-
+                Medicamento model = (Medicamento)item;
                 model.IsFavorite = !model.IsFavorite;
 
                 string groupName = _medicationDataAccess
                     .GetGrupoNomeById(model.IdGrupo);
 
                 SetFavorite(model, groupName);
-
-                var favoriteMed = Resolver.Get<IFavoriteMedications>();
-                favoriteMed.MedicationName = model.NomeMedicamento;
-                favoriteMed.GroupName = groupName;
-                favoriteMed.MedicationId = model.Id;
-                favoriteMed.IdGrupo = model.IdGrupo;
-
-                if (model.IsFavorite)
-                {
-                    Resolver
-                     .Get<IFavoriteMedicationsDataAccess>()
-                     .Insert(favoriteMed);
-
-                    return;
-                }
-
-                Resolver
-                 .Get<IFavoriteMedicationsDataAccess>()
-                 .Delete(favoriteMed);
+                UpdateMedicationList(model);
+                
             }
             catch (Exception)
             {
                 MessageHelper.ShowErrorMessage();
             }
+        }
+
+        private void UpdateMedicationList(Medicamento model)
+        {
+            List<Medicamento> list = AppSource.MedicamentosList;
+
+            Medicamento item = list.FirstOrDefault(
+                x => x.Id == model.Id &&
+                x.NomeMedicamento == model.NomeMedicamento
+            );
+
+            item.IsFavorite = model.IsFavorite;
         }
 
         private void SetIsFavorite(Medicamento item)
@@ -265,12 +231,9 @@ namespace CalculadoraAnestesica.ViewModel.Base
         {
             try
             {
-                return MedicamentosList
+                return AppSource.MedicamentosList
                     .Where(x => x.IdGrupo == grupo.Id)
                     .ToList();
-
-                //return _medicationDataAccess
-                //    .GetMedicamento(Utils.ConvertToTableSchema(grupo.NomeGrupo));
             }
             catch (Exception ex)
             {
@@ -302,6 +265,30 @@ namespace CalculadoraAnestesica.ViewModel.Base
             catch (Exception ex)
             {
                 return new List<Medicamento>();
+            }
+        }
+
+        public virtual void ExecuteCalculation(ObservableCollection<Medicamento> medicamentos)
+        {
+            try
+            {
+                double weight = string.IsNullOrEmpty(EntryWeight)
+                    ? 0
+                    : double.Parse(EntryWeight);
+
+                foreach (var med in medicamentos)
+                {
+                    (double result1, double? result2) = Calculate(
+                        med.DosagemMedicamento, weight
+                    );
+
+                    med.Resultado = result2.HasValue
+                        ? $"{result1} - {result2}mg"
+                        : $"{result1}mg";
+                }
+            }
+            catch (Exception ex)
+            {
             }
         }
 
@@ -357,14 +344,33 @@ namespace CalculadoraAnestesica.ViewModel.Base
             return string.Join("", result);
         }
 
-        private void SetFavorite(Medicamento medicamento,
+        private void SetFavorite(Medicamento model,
             string groupName)
         {
             _medicationDataAccess.SetFavoriteMedication(
                 Utils.ConvertToTableSchema(groupName),
-                medicamento.Id,
-                medicamento.IsFavorite
+                model.Id,
+                model.IsFavorite
             );
+
+            var favoriteMed = Resolver.Get<IFavoriteMedications>();
+            favoriteMed.MedicationName = model.NomeMedicamento;
+            favoriteMed.GroupName = groupName;
+            favoriteMed.MedicationId = model.Id;
+            favoriteMed.IdGrupo = model.IdGrupo;
+
+            if (model.IsFavorite)
+            {
+                Resolver
+                 .Get<IFavoriteMedicationsDataAccess>()
+                 .Insert(favoriteMed);
+
+                return;
+            }
+
+            Resolver
+             .Get<IFavoriteMedicationsDataAccess>()
+             .Delete(favoriteMed);
         }
 
         private void ApplyFilter()
@@ -379,7 +385,7 @@ namespace CalculadoraAnestesica.ViewModel.Base
                 return;
             }
 
-            FilteredMedicamentosList = MedicamentosList
+            FilteredMedicamentosList = AppSource.MedicamentosList
                 .Where(item =>  item.NomeMedicamento.Contains(filter))
                 .ToList();
 

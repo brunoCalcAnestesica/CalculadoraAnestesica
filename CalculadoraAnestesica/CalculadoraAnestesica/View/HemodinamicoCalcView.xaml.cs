@@ -7,6 +7,7 @@ using CalculadoraAnestesica.View.Intercaces;
 using CalculadoraAnestesica.ViewModel;
 using ExcelDataReader;
 using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace CalculadoraAnestesica.View
 {	
@@ -21,6 +22,11 @@ namespace CalculadoraAnestesica.View
         {
             var binding = (HemodinamicoCalcViewModel)BindingContext;
             binding.ExecuteSearch.Execute(null);
+        }
+
+        void ImageButton_Clicked(System.Object sender, System.EventArgs e)
+        {
+            picker.Focus();
         }
     }
 }
