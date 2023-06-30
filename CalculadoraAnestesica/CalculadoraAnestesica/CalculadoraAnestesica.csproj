@@ -25,6 +25,7 @@
     <PackageReference Include="ExcelDataReader" Version="3.6.0" />
     <PackageReference Include="ExcelDataReader.DataSet" Version="3.6.0" />
     <PackageReference Include="DevExpress.XamarinForms.Grid" Version="22.1.7" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="AnestCalc.html" />
@@ -60,9 +61,9 @@
     <None Remove="Model\Base\" />
     <None Remove="EmbeddedResources\MedCalcHemodinamico.xlsx" />
     <None Remove="Helpers\" />
-    <None Remove="EmbeddedResources\userdb.db" />
     <None Remove="Constants\" />
     <None Remove="Components\" />
+    <None Remove="EmbeddedResources\userdb.db" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="EmbeddedResources\AnestCalc.html" />

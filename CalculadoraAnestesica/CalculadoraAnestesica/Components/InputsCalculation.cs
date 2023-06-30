@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using Xamarin.Forms;
 using static System.Net.Mime.MediaTypeNames;
@@ -40,7 +42,7 @@ namespace CalculadoraAnestesica.Components
             var component = (InputsCalculation)bindable;
             component.EntryAge.Text = (string)newValue;
         }
-        
+
         public string EntryWeightText
         {
             get { return (string)GetValue(EntryWeightTextProperty); }
@@ -53,8 +55,9 @@ namespace CalculadoraAnestesica.Components
             set { SetValue(EntryAgeTextProperty, value); }
         }
 
-        Entry EntryAge;
-        Entry EntryWeight;
+        public Action Callback { get; set; }
+        public Entry EntryAge { get; set; }
+        public Entry EntryWeight { get; set; }
 
         public InputsCalculation()
 		{
@@ -81,14 +84,6 @@ namespace CalculadoraAnestesica.Components
             EntryAge.TextChanged += EntryAge_TextChanged;
             stkAge.Children.Add(EntryAge);
 
-            //Label label = new Label();
-            //label.Text = "A";
-            //label.FontSize = 15;
-            //label.VerticalTextAlignment = TextAlignment.Center;
-            //label.TextColor = Color.FromHex("#005299");
-
-            //stkAge.Children.Add(label);
-            
             StackLayout stackLayout = new StackLayout();
 			stackLayout.Margin = new Thickness(0, 0, -50, 0);
 			stackLayout.Orientation = StackOrientation.Horizontal;
@@ -109,6 +104,11 @@ namespace CalculadoraAnestesica.Components
 			labelKg.TextColor = Color.FromHex("#005299");
 			labelKg.FontSize = 15;
             stackLayout.Children.Add(labelKg);
+        }
+
+        private void Picker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Callback?.Invoke();
         }
 
         private void EntryWeight_TextChanged(object sender,
@@ -133,6 +133,13 @@ namespace CalculadoraAnestesica.Components
                     if (!newValue.Contains(".") || !newValue.Contains(","))
                     {
                         decimal val = decimal.Parse(newTextValue) / 10.0m;
+
+                        if (val > 99m)
+                        {
+                            EntryWeightText = "99";
+                            return;
+                        }
+
                         newValue = val.ToString().Substring(0, 4);
                     }
 
@@ -165,6 +172,7 @@ namespace CalculadoraAnestesica.Components
                 {
                     EntryAgeText = newValue.Substring(0, 2);
                     EntryAge.Text = newValue.Substring(0, 2);
+                    Callback?.Invoke();
                     return;
                 }
 

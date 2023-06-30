@@ -23,6 +23,28 @@ namespace CalculadoraAnestesica.ViewModel
         private DataSet DataSet { get; set; }
         public List<string> PickerItems { get; set; }
 
+        private bool isHemodinamicoLabelVisible = true;
+        public bool IsHemodinamicoLabelVisible
+        {
+            get { return isHemodinamicoLabelVisible; }
+            set
+            {
+                isHemodinamicoLabelVisible = value;
+                RaisePropertyChanged();
+            }
+        }
+
+        private bool isHemodinamicoModelListVisible;
+        public bool IsHemodinamicoModelListVisible
+        {
+            get { return isHemodinamicoModelListVisible; }
+            set
+            {
+                isHemodinamicoModelListVisible = value;
+                RaisePropertyChanged();
+            }
+        }
+
         private string selectedItemPicker;
         public string SelectedItemPicker
         {
@@ -122,23 +144,30 @@ namespace CalculadoraAnestesica.ViewModel
         {
             Task.Run(() =>
             {
-                var stream = Assembly
-                   .GetExecutingAssembly()
-                   .GetManifestResourceStream(
-                        "CalculadoraAnestesica.EmbeddedResources.MedCalcHemodinamico.xlsx"
-                    );
-
-                var reader = ExcelReaderFactory.CreateReader(stream);
-
-                var conf = new ExcelDataSetConfiguration
+                try
                 {
-                    ConfigureDataTable = _ => new ExcelDataTableConfiguration
-                    {
-                        UseHeaderRow = true
-                    }
-                };
+                    var stream = Assembly
+                               .GetExecutingAssembly()
+                               .GetManifestResourceStream(
+                                    "CalculadoraAnestesica.EmbeddedResources.MedCalcHemodinamico.xlsx"
+                                );
 
-                DataSet = reader.AsDataSet(conf);
+                    var reader = ExcelReaderFactory.CreateReader(stream);
+
+                    var conf = new ExcelDataSetConfiguration
+                    {
+                        ConfigureDataTable = _ => new ExcelDataTableConfiguration
+                        {
+                            UseHeaderRow = true
+                        }
+                    };
+
+                    DataSet = reader.AsDataSet(conf);
+                }
+                catch (Exception ex)
+                {
+
+                }
             });
         }
 
@@ -151,6 +180,8 @@ namespace CalculadoraAnestesica.ViewModel
         {
             if (DataSet != null)
             {
+                IsHemodinamicoModelListVisible = true;
+
                 var tableRows = DataSet
                     .Tables[0]
                     .Rows.Cast<DataRow>()
@@ -354,6 +385,9 @@ namespace CalculadoraAnestesica.ViewModel
                 case nameof(EntryAge):
                     Age = decimal.Parse(EntryAge ?? "0");
                     ExecuteExcelSearch();
+                    break;
+                case nameof(IsHemodinamicoModelListVisible):
+                    IsHemodinamicoLabelVisible = !IsHemodinamicoModelListVisible;
                     break;
             }
         }

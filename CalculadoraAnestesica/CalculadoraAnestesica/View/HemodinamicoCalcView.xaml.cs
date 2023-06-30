@@ -24,6 +24,11 @@ namespace CalculadoraAnestesica.View
             binding.ExecuteSearch.Execute(null);
         }
 
+        void SetPickerFocus()
+        {
+            picker.Focus();
+        }
+
         void ImageButton_Clicked(System.Object sender, System.EventArgs e)
         {
             picker.Focus();

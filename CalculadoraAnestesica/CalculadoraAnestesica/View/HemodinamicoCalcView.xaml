@@ -7,6 +7,7 @@
     xmlns:ctrl="clr-namespace:CalculadoraAnestesica.Components"
     xmlns:ios="clr-namespace:Xamarin.Forms.PlatformConfiguration.iOSSpecific;assembly=Xamarin.Forms.Core"
     ios:Page.UseSafeArea="true"
+    xmlns:controls="clr-namespace:CalculadoraAnestesica.Controls"
     BackgroundColor="#F5F5F5">
     <Grid
         RowDefinitions="*">
@@ -22,6 +23,7 @@
                 </ctrl:HeaderApp.HeightRequest>
             </ctrl:HeaderApp>
             <ctrl:InputsCalculation
+                x:Name="inputsCalculation"
                 Grid.Row="1"
                 EntryAgeText="{Binding EntryAge, Mode=TwoWay}"
                 EntryWeightText="{Binding EntryWeight, Mode=TwoWay}"/>
