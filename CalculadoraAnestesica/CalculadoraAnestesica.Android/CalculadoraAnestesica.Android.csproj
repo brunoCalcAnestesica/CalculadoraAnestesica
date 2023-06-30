@@ -44,6 +44,7 @@
     <WarningLevel>4</WarningLevel>
     <AndroidManagedSymbols>true</AndroidManagedSymbols>
     <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+    <MandroidI18n>west</MandroidI18n>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Mono.Android" />
@@ -68,6 +69,9 @@
     </PackageReference>
     <PackageReference Include="DevExpress.XamarinForms.Grid">
       <Version>22.1.7</Version>
+    </PackageReference>
+    <PackageReference Include="Rg.Plugins.Popup">
+      <Version>2.1.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

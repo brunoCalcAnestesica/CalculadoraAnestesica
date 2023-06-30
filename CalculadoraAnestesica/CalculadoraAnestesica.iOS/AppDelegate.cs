@@ -24,9 +24,8 @@ namespace CalculadoraAnestesica.iOS
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             global::Xamarin.Forms.Forms.Init();
-            DevExpress.XamarinForms.DataGrid.iOS.Initializer.Init();
+            Rg.Plugins.Popup.Popup.Init();
             LoadApplication(new App());
-            SfTabViewRenderer.Init();
             return base.FinishedLaunching(app, options);
         }
     }
