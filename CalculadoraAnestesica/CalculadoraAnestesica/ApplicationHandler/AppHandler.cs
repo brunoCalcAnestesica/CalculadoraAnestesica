@@ -7,6 +7,7 @@ using CalculadoraAnestesica.DataAccess.Interfaces;
 using CalculadoraAnestesica.DbContext.Tables;
 using CalculadoraAnestesica.DependencyInjection.IoC;
 using CalculadoraAnestesica.Helpers;
+using CalculadoraAnestesica.Model;
 using CalculadoraAnestesica.Model.Interfaces;
 using CalculadoraAnestesica.Shared;
 using Xamarin.Essentials;
@@ -31,14 +32,28 @@ namespace CalculadoraAnestesica.ApplicationHandler
 
                 foreach (var grupo in grupos)
                 {
-                    var med = Resolver
+                    var medications = Resolver
                         .Get<IMedicamentosDataAccess>()
                         .GetMedicamento(Utils.ConvertToTableSchema(grupo.NomeGrupo));
 
                     if (AppSource.MedicamentosList is null)
                         AppSource.MedicamentosList = new List<Model.Medicamento>();
 
-                    AppSource.MedicamentosList.AddRange(med);
+                    if (AppSource.MedicamentosGroupList is null)
+                        AppSource.MedicamentosGroupList = new List<Model.Medicamento>();
+
+                    var list = new List<Medicamento>();
+
+                    foreach (Medicamento med in medications)
+                    {
+                        med.DosagemMedicamento = med.DosagemMedicamento.Trim().TrimStart('-');
+                        list.Add(med);
+                    }
+
+                    if (MedicamentosHelper.IsGroupedMedication(grupo.NomeGrupo))
+                        AppSource.MedicamentosGroupList.AddRange(list);
+                    else
+                        AppSource.MedicamentosList.AddRange(list);
                 }
             });
         }

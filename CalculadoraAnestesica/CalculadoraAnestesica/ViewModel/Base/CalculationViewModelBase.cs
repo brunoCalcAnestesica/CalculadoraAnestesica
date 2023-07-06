@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Windows.Input;
 using CalculadoraAnestesica.Shared;
+using Xamarin.Forms;
 
 namespace CalculadoraAnestesica.ViewModel.Base
 {
@@ -61,19 +63,16 @@ namespace CalculadoraAnestesica.ViewModel.Base
 
         public void CheckHasValuesChanged()
         {
-            if (AppSource.Peso.HasValue || AppSource.Idade.HasValue)
+            if (AppSource.Peso.HasValue && AppSource.Peso != double.Parse(EntryWeight ?? "0"))
             {
-                if (AppSource.Peso != double.Parse(EntryWeight ?? "0"))
-                {
-                    EntryWeight = AppSource.Peso.Value.ToString();
-                    HasChangedValues = true;
-                }
+                EntryWeight = AppSource.Peso.Value.ToString();
+                HasChangedValues = true;
+            }
 
-                if (AppSource.Idade.Value != double.Parse(EntryAge ?? "0"))
-                {
-                    EntryAge = AppSource.Idade.Value.ToString();
-                    HasChangedValues = true;
-                }
+            if (AppSource.Idade.HasValue && AppSource.Idade.Value != double.Parse(EntryAge ?? "0"))
+            {
+                EntryAge = AppSource.Idade.Value.ToString();
+                HasChangedValues = true;
             }
         }
     }

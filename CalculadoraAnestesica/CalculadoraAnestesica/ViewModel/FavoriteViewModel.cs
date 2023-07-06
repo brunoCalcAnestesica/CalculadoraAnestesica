@@ -64,7 +64,7 @@ namespace CalculadoraAnestesica.ViewModel
             }
 
             FavoriteMedications = new ObservableCollection<GroupFavoriteMedications>(listFavMeds);
-            AuxList = new List<GrupoNomesDTO>(GrupoNomes);
+            GroupAuxList = new List<GrupoNomesDTO>(GrupoNomes);
 
             ExecuteCalculationFavoriteMed();
         }

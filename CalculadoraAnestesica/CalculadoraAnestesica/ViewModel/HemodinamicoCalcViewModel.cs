@@ -147,10 +147,10 @@ namespace CalculadoraAnestesica.ViewModel
                 try
                 {
                     var stream = Assembly
-                               .GetExecutingAssembly()
-                               .GetManifestResourceStream(
-                                    "CalculadoraAnestesica.EmbeddedResources.MedCalcHemodinamico.xlsx"
-                                );
+                        .GetExecutingAssembly()
+                        .GetManifestResourceStream(
+                        "CalculadoraAnestesica.EmbeddedResources.MedCalcHemodinamico.xlsx"
+                    );
 
                     var reader = ExcelReaderFactory.CreateReader(stream);
 

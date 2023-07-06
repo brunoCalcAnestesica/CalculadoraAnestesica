@@ -269,8 +269,6 @@ namespace CalculadoraAnestesica.DataAccess
 
         public List<GrupoNomesDTO> GetGrupoNomes()
         {
-            Mutex.WaitOne();
-
             string tableName = TablesSchema.GRUPO_MEDICAMENTOS;
 
             var grupoNomes = Connection.CreateCommand($@"
@@ -278,8 +276,6 @@ namespace CalculadoraAnestesica.DataAccess
                            {tableName}.id as Id
                       FROM {tableName}")
             .ExecuteQuery<GrupoNomesDTO>();
-
-            Mutex.ReleaseMutex();
 
             return grupoNomes;
         }

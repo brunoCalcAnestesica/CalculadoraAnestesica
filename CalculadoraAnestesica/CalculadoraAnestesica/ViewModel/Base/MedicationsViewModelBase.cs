@@ -13,14 +13,17 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using CalculadoraAnestesica.Shared;
 using System.Diagnostics;
+using Xamarin.Forms.Internals;
+using System.Globalization;
 
 namespace CalculadoraAnestesica.ViewModel.Base
 {
 	public class MedicationsViewModelBase : CalculationViewModelBase
 	{
         protected readonly IMedicamentosDataAccess _medicationDataAccess;
-        protected List<GrupoNomesDTO> AuxList;
-        public List<Medicamento> FilteredMedicamentosList;
+        protected List<GrupoNomesDTO> GroupAuxList;
+        protected List<Medicamento> AuxMedicamentosList;
+        public List<Medicamento> GroupFilteredMedicamentosList;
         public bool IsFiltering;
 
         public ICommand SearchIconCommand
@@ -40,6 +43,21 @@ namespace CalculadoraAnestesica.ViewModel.Base
                 });
             }
         }
+
+        private ObservableCollection<Medicamento> medicamentosList;
+        public ObservableCollection<Medicamento> MedicamentosList
+        {
+            get { return medicamentosList; }
+            set
+            {
+                if (medicamentosList != value)
+                {
+                    medicamentosList = value;
+                    RaisePropertyChanged();
+                }
+            }
+        }
+
         private ObservableCollection<GrupoNomesDTO> grupoNomes;
         public ObservableCollection<GrupoNomesDTO> GrupoNomes
         {
@@ -144,34 +162,82 @@ namespace CalculadoraAnestesica.ViewModel.Base
             _medicationDataAccess = Resolver.Get<IMedicamentosDataAccess>();
             Medicamentos = new ObservableCollection<Medicamentos>();
             GrupoNomes = new ObservableCollection<GrupoNomesDTO>();
-            AuxList = new List<GrupoNomesDTO>();
+            GroupAuxList = new List<GrupoNomesDTO>();
+            MedicamentosList = new ObservableCollection<Medicamento>();
+            AuxMedicamentosList = new List<Medicamento>();
         }
 
         public override void OnAppearing()
         {
             try
             {
-                if (!GrupoNomes.Any())
-                {
-                    List<GrupoNomesDTO> grupos = _medicationDataAccess
-                        .GetGrupoNomes()
-                        .OrderBy(x => x.NomeGrupo)
-                        .ToList();
-
-                    if (grupos != null)
-                    {
-                        foreach (var item in grupos)
-                            GrupoNomes.Add(item);
-                    }
-
-                    AuxList = new List<GrupoNomesDTO>(GrupoNomes);
-                }
-
+                LoadMedicationList();
+                LoadGroupMedicationList();
                 base.OnAppearing();
             }
             catch (Exception ex)
             {
                 MessageHelper.ShowErrorMessage();
+            }
+        }
+
+        protected virtual void LoadMedicationList()
+        {
+            if (!MedicamentosList.Any())
+            {
+                if (AppSource.Peso.HasValue)
+                {
+                    LoadMedicationListValues();
+                }
+                else
+                {
+                    MedicamentosList = new ObservableCollection<Medicamento>(AppSource.MedicamentosList);
+                }
+
+                AuxMedicamentosList = new List<Medicamento>(MedicamentosList);
+            }
+        }
+
+        protected virtual void LoadGroupMedicationList()
+        {
+            if (!GrupoNomes.Any())
+            {
+                List<GrupoNomesDTO> grupos = _medicationDataAccess
+                    .GetGrupoNomes()
+                    .OrderBy(x => x.NomeGrupo)
+                    .ToList();
+
+                var newGroup = new List<GrupoNomesDTO>();
+
+                foreach (var item in grupos)
+                {
+                    string nomeGrupo = item.NomeGrupo;
+
+                    if (MedicamentosHelper.IsGroupedMedication(nomeGrupo))
+                        newGroup.Add(item);
+                }
+
+                if (newGroup != null)
+                {
+                    foreach (var item in newGroup)
+                        GrupoNomes.Add(item);
+                }
+
+                GroupAuxList = new List<GrupoNomesDTO>(GrupoNomes);
+            }
+        }
+
+        protected virtual void LoadMedicationListValues()
+        {
+            foreach (var med in AppSource.MedicamentosList)
+            {
+                (double result1, double? result2) = Calculate(med.DosagemMedicamento, AppSource.Peso.Value);
+
+                med.Resultado = result2.HasValue
+                    ? $"{result1} - {result2}mg"
+                    : $"{result1}mg";
+
+                MedicamentosList.Add(med);
             }
         }
 
@@ -186,6 +252,9 @@ namespace CalculadoraAnestesica.ViewModel.Base
                     break;
                 case nameof(IsHeaderVisible):
                     IsSearchBarVisible = !IsHeaderVisible;
+                    break;
+                case nameof(EntryWeight):
+                    ExecuteCalculation(MedicamentosList?.ToList());
                     break;
             }
         }
@@ -231,7 +300,7 @@ namespace CalculadoraAnestesica.ViewModel.Base
         {
             try
             {
-                return AppSource.MedicamentosList
+                return AppSource.MedicamentosGroupList
                     .Where(x => x.IdGrupo == grupo.Id)
                     .ToList();
             }
@@ -282,6 +351,9 @@ namespace CalculadoraAnestesica.ViewModel.Base
                         med.DosagemMedicamento, weight
                     );
 
+                    if (result1 == 0 && result2 is null)
+                        return;
+
                     med.Resultado = result2.HasValue
                         ? $"{result1} - {result2}mg"
                         : $"{result1}mg";
@@ -294,53 +366,70 @@ namespace CalculadoraAnestesica.ViewModel.Base
 
         public (double, double?) Calculate(string dosagem, double peso)
         {
-            if (dosagem.Contains("-"))
+            try
             {
-                string[] arr = dosagem.Split('-');
+                if (string.IsNullOrEmpty(dosagem))
+                    return (0, null);
 
-                string n1 = arr[0].Trim();
-                string[] arrNum2 = arr[1].Trim().Split(' ');
-                string n2 = GetOnlyNumber(arrNum2[0]);
-
-                double result1 = double.Parse(n1) * peso;
-                double result2 = double.Parse(n2) * peso;
-
-                return (result1, result2);
-            }
-
-            string[] arr2 = dosagem.Split(' ');
-
-            int? index = null;
-
-            for (int i = 0; i < arr2.Length; i++)
-            {
-                string item = arr2[i].Trim();
-
-                foreach (char c in item)
+                if (dosagem.StartsWith("-"))
                 {
-                    if (char.IsDigit(c))
+                    string n1 = GetOnlyNumber(dosagem);
+                    double result = double.Parse(n1) * peso;
+                    return (result, null);
+                }
+
+                if (dosagem.Contains("-"))
+                {
+                    string[] arr = dosagem.Split('-');
+
+                    string n1 = arr[0].Trim().Replace(',', UserInfo.DecimalSeparator);
+                    string[] arrNum2 = arr[1].Trim().Split(' ');
+                    string n2 = GetOnlyNumber(arrNum2[0]);
+
+                    double result1 = Math.Round(double.Parse(n1) * peso, 2);
+                    double result2 = Math.Round(double.Parse(n2) * peso, 2);
+
+                    return (result1, result2);
+                }
+
+                string[] arr2 = dosagem.Split(' ');
+
+                int? index = null;
+
+                for (int i = 0; i < arr2.Length; i++)
+                {
+                    string item = arr2[i].Trim();
+
+                    foreach (char c in item)
                     {
-                        index = i;
+                        if (char.IsDigit(c))
+                        {
+                            index = i;
+                            break;
+                        }
+
                         break;
                     }
 
-                    break;
+                    if (index.HasValue)
+                        break;
                 }
 
-                if (index.HasValue)
-                    break;
+                string num1 = GetOnlyNumber(arr2[index.Value]);
+
+                double resultNum1 = Math.Round(double.Parse(num1) * peso, 2);
+                return (resultNum1, null);
             }
-
-            string num1 = GetOnlyNumber(arr2[index.Value]);
-
-            double resultNum1 = double.Parse(num1) * peso;
-
-            return (resultNum1, null);
+            catch (Exception ex)
+            {
+                return (0, null);
+            }
         }
 
         private string GetOnlyNumber(string doseString)
         {
-            var result = doseString.Where(c => char.IsDigit(c) || c == ',');
+            doseString = doseString.Replace(',', UserInfo.DecimalSeparator);
+            var result = doseString.Where(c => char.IsDigit(c) || c == UserInfo.DecimalSeparator);
             return string.Join("", result);
         }
 
@@ -375,21 +464,36 @@ namespace CalculadoraAnestesica.ViewModel.Base
 
         private void ApplyFilter()
         {
-            string filter = SearchBarText;
             IsFiltering = true;
 
-            if (string.IsNullOrEmpty(filter))
+            if (string.IsNullOrEmpty(SearchBarText))
             {
-                GrupoNomes = new ObservableCollection<GrupoNomesDTO>(AuxList);
+                GrupoNomes = new ObservableCollection<GrupoNomesDTO>(GroupAuxList);
+                MedicamentosList = new ObservableCollection<Medicamento>(AuxMedicamentosList);
                 IsFiltering = false;
                 return;
             }
 
-            FilteredMedicamentosList = AppSource.MedicamentosList
-                .Where(item =>  item.NomeMedicamento.Contains(filter))
+            Task.Run(MedicamentosListFilterHandler);
+            Task.Run(GroupFilterListHandler);
+        }
+
+        private void MedicamentosListFilterHandler()
+        {
+            List<Medicamento> filteredMedicamentos = AppSource.MedicamentosList
+                .Where(item => item.NomeMedicamento.Contains(SearchBarText))
                 .ToList();
 
-            var items = FilteredMedicamentosList
+            MedicamentosList = new ObservableCollection<Medicamento>(filteredMedicamentos);
+        }
+
+        private void GroupFilterListHandler()
+        {
+            GroupFilteredMedicamentosList = AppSource.MedicamentosGroupList
+                .Where(item => item.NomeMedicamento.Contains(SearchBarText))
+                .ToList();
+
+            var items = GroupFilteredMedicamentosList
                 .GroupBy(x => x.IdGrupo)
                 .Select(c => c.First())
                 .ToList();
@@ -398,7 +502,7 @@ namespace CalculadoraAnestesica.ViewModel.Base
 
             for (int i = 0; i < items.Count(); i++)
             {
-                var newItems = AuxList.Where(x => x.Id == items[i].IdGrupo);
+                var newItems = GroupAuxList.Where(x => x.Id == items[i].IdGrupo);
 
                 if (newItems.Any())
                     list.AddRange(newItems);

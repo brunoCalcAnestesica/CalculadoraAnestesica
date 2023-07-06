@@ -16,6 +16,7 @@ namespace CalculadoraAnestesica.View
 		public HemodinamicoCalcView()
 		{
 			InitializeComponent();
+            inputsCalculation.CalculationCallback = SetPickerFocus;
         }
 
         void Picker_SelectedIndexChanged(System.Object sender, System.EventArgs e)

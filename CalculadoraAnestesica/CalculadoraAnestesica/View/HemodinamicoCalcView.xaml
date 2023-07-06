@@ -26,8 +26,15 @@
                 x:Name="inputsCalculation"
                 Grid.Row="1"
                 EntryAgeText="{Binding EntryAge, Mode=TwoWay}"
-                EntryWeightText="{Binding EntryWeight, Mode=TwoWay}"/>
-            <StackLayout
+                EntryWeightText="{Binding EntryWeight, Mode=TwoWay}"
+                SelectedLabel="{Binding LabelSelectedItemPicker}"/>
+            <Picker
+                x:Name="picker"
+                IsVisible="False"
+                SelectedIndexChanged="Picker_SelectedIndexChanged"
+                ItemsSource="{Binding PickerItems}"
+                SelectedItem="{Binding SelectedItemPicker}"/>
+            <!--<StackLayout
                 HorizontalOptions="End"
                 Grid.Row="2"
                 Orientation="Horizontal">
@@ -51,8 +58,17 @@
                     BackgroundColor="#FFF"
                     CornerRadius="20"
                     HorizontalOptions="End"/>
-            </StackLayout>
+            </StackLayout>-->
+            <Label
+                IsVisible="{Binding IsHemodinamicoLabelVisible}"
+                Text="Insira os valores para calcular."
+                FontSize="18"
+                TextColor="#003766"
+                Grid.Row="3"
+                HorizontalTextAlignment="Center"
+                VerticalTextAlignment="Center"/>
             <CollectionView
+                IsVisible="{Binding IsHemodinamicoModelListVisible}"
                 ItemsSource="{Binding HemodinamicoModelList}"
                 Grid.Row="3"
                 EmptyView="A lista está vazia.">

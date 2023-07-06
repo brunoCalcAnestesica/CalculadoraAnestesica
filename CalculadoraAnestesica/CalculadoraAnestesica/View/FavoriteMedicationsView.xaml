@@ -27,9 +27,10 @@
             </ctrl:HeaderApp>
             <ctrl:InputsCalculation
                 Grid.Row="1"
-                EntryAgeText="{Binding EntryAge}"
-                EntryWeightText="{Binding EntryWeight}"/>
+                EntryAgeText="{Binding EntryAge, Mode=TwoWay}"
+                EntryWeightText="{Binding EntryWeight, Mode=TwoWay}"/>
             <CollectionView
+                EmptyView="Você ainda não favoritou nenhum medicamento."
                 Margin="5"
                 ItemsSource="{Binding FavoriteMedications}"
                 Grid.Row="2"

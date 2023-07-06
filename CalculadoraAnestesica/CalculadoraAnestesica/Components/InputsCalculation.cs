@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using Xamarin.Forms;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -27,6 +28,15 @@ namespace CalculadoraAnestesica.Components
             propertyChanged: EntryAgeTextPropertyChanged
         );
 
+        public static readonly BindableProperty SelectedLabelProperty = BindableProperty.Create(
+            nameof(SelectedLabel),
+            typeof(string),
+            typeof(InputsCalculation),
+            default,
+            BindingMode.TwoWay,
+            propertyChanged: SelectedLabelPropertyChanged
+        );
+
         private static void EntryWeightTextPropertyChanged(BindableObject bindable,
             object oldValue,
             object newValue)
@@ -43,6 +53,14 @@ namespace CalculadoraAnestesica.Components
             component.EntryAge.Text = (string)newValue;
         }
 
+        private static void SelectedLabelPropertyChanged(BindableObject bindable,
+           object oldValue,
+           object newValue)
+        {
+            var component = (InputsCalculation)bindable;
+            component.Label.Text = (string)newValue;
+        }
+
         public string EntryWeightText
         {
             get { return (string)GetValue(EntryWeightTextProperty); }
@@ -55,34 +73,50 @@ namespace CalculadoraAnestesica.Components
             set { SetValue(EntryAgeTextProperty, value); }
         }
 
-        public Action Callback { get; set; }
+        public string SelectedLabel
+        {
+            get { return (string)GetValue(SelectedLabelProperty); }
+            set { SetValue(SelectedLabelProperty, value); }
+        }
+
+        public Action CalculationCallback { get; set; }
         public Entry EntryAge { get; set; }
         public Entry EntryWeight { get; set; }
+        public Label Label { get; set; }
 
         public InputsCalculation()
 		{
             ColumnSpacing = 75;
+
 			RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+
             Margin = new Thickness(0,15,0,0);
 			HorizontalOptions = LayoutOptions.Center;
 			VerticalOptions = LayoutOptions.Center;
 
             StackLayout stkAge = new StackLayout();
-            stkAge.Margin = new Thickness(0, 0, -50, 0);
+            stkAge.Margin = new Thickness(0, 0, -60, 0);
             stkAge.Orientation = StackOrientation.Horizontal;
             Children.Add(stkAge, 0, 1);
 
             EntryAge = new Entry();
 			EntryAge.TextColor = Color.FromHex("#005299");
 			EntryAge.Placeholder = "Idade...";
-			EntryAge.Keyboard = Keyboard.Numeric;
+            EntryAge.PlaceholderColor = Color.Gray;
+            EntryAge.Keyboard = Keyboard.Numeric;
 			EntryAge.HorizontalTextAlignment = TextAlignment.Center;
 			EntryAge.WidthRequest = 85;
             EntryAge.TextChanged += EntryAge_TextChanged;
             stkAge.Children.Add(EntryAge);
+
+            Label = new Label();
+            Label.VerticalTextAlignment = TextAlignment.Center;
+            Label.TextColor = Color.FromHex("#005299");
+            Label.FontSize = 15;
+            stkAge.Children.Add(Label);
 
             StackLayout stackLayout = new StackLayout();
 			stackLayout.Margin = new Thickness(0, 0, -50, 0);
@@ -92,6 +126,7 @@ namespace CalculadoraAnestesica.Components
             EntryWeight = new Entry();
             EntryWeight.TextColor = Color.FromHex("#005299");
             EntryWeight.Placeholder = "Peso...";
+            EntryWeight.PlaceholderColor = Color.Gray;
             EntryWeight.Keyboard = Keyboard.Numeric;
             EntryWeight.HorizontalTextAlignment = TextAlignment.Center;
             EntryWeight.WidthRequest = 75;
@@ -108,7 +143,7 @@ namespace CalculadoraAnestesica.Components
 
         private void Picker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            Callback?.Invoke();
+            CalculationCallback?.Invoke();
         }
 
         private void EntryWeight_TextChanged(object sender,
@@ -137,13 +172,15 @@ namespace CalculadoraAnestesica.Components
                         if (val > 99m)
                         {
                             EntryWeightText = "99";
-                            return;
                         }
-
-                        newValue = val.ToString().Substring(0, 4);
+                        else
+                        {
+                            newValue = val.ToString().Substring(0, 4);
+                        }
                     }
 
                     EntryWeightText = newValue.Substring(0, 4);
+                    CalculationCallback?.Invoke();
                     return;
                 }
 
@@ -172,7 +209,8 @@ namespace CalculadoraAnestesica.Components
                 {
                     EntryAgeText = newValue.Substring(0, 2);
                     EntryAge.Text = newValue.Substring(0, 2);
-                    Callback?.Invoke();
+                    CalculationCallback?.Invoke();
+                    EntryWeight.Focus();
                     return;
                 }
 

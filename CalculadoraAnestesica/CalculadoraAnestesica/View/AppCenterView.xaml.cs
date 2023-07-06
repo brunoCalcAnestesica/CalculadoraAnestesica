@@ -58,7 +58,7 @@ namespace CalculadoraAnestesica.View
             if (appCenterViewModel.IsFiltering)
             {
                 medications = appCenterViewModel
-                    .FilteredMedicamentosList
+                    .GroupFilteredMedicamentosList
                     .Where(x => x.IdGrupo == source.Id)
                     .ToList();
 
